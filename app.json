@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "ConnectCBS",
+    "name": "MamanCBS",
     "slug": "ConnectCBS",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.maman.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1b67432d-11ff-4fde-9aca-e6ad86f9b2b7"
+      }
     }
   }
 }
