@@ -1,0 +1,77 @@
+{
+  "settings.user": "إعدادات المستخدم",
+  "settings.name": "اسم الأم",
+  "settings.firstName": "الاسم الأول",
+  "settings.dob": "تاريخ الميلاد",
+  "settings.phone": "الهاتف",
+  "settings.username": "اسم المستخدم",
+  "settings.fileNumber": "رقم الملف",
+  "settings.password": "كلمة المرور",
+  "settings.save": "حفظ",
+  "page.title": "بعد الأسئلة",
+  "page.noPostQuestions": "لم يتم العثور على أسئلة بعد",
+  "tabLabels": {
+    "Accueil": "الصفحة الرئيسية",
+    "Conseils": "نصائح",
+    "Aide": "مساعدة",
+    "Profil": "الملف الشخصي"
+  },
+  "sidebar": {
+    "Chat direct": "الدردشة المباشرة",
+    "Conseils": "نصائح",
+    "Listes de contrôle": "قوائم التحقق",
+    "Paramètres": "الإعدادات",
+    "Évaluez notre application": "قيم تطبيقنا",
+    "Contact": "اتصل بنا",
+    "Deconnection": "تسجيل الخروج"
+  },
+  "chatbotPopup": {
+    "Need help?": "هل تحتاج إلى مساعدة ؟"
+  },
+  "contactModal": {
+    "clinicName": "عيادة بو سيجور",
+    "address": "الطريق السريع العام 1 - الكيلومتر 6، مقرين 2033",
+    "close": "إغلاق"
+  },
+  "directContact": {
+    "contactPrompt": "هل ترغب في الاتصال بأحد أعضاء فريقنا مباشرة؟",
+    "noNurseAvailable": "عذرًا، لا يتوفر ممرض للرد.",
+    "close": "إغلاق"
+  },
+  "interfaceLogin": {
+    "enterCredentials": "الرجاء إدخال اسم المستخدم وكلمة المرور.",
+    "tableNotRecognized": "الجدول غير معترف به.",
+    "userDataInvalid": "بيانات المستخدم غير صالحة.",
+    "loginError": "حدث خطأ أثناء تسجيل الدخول.",
+    "usernamePlaceholder": "اسم المستخدم",
+    "passwordPlaceholder": "كلمة المرور",
+    "login": "تسجيل الدخول",
+    "forgotCredentials": "هل نسيت بيانات الدخول الخاصة بك؟",
+    "recover": "استرد هنا",
+    "close": "إغلاق"
+  },
+  "posts": {
+    "searchPlaceholder": "البحث حسب الموضوع...",
+    "noPostsFound": "لم يتم العثور على مقالات...",
+    "liked": "أعجبني",
+    "Share": "شارك المقال"
+  },
+  "Astuces pour maman": "نصائح للأم",
+  "Les documents à apporter": "الوثائق المطلوبة",
+  "Assurez-vous d'avoir tous les documents nécessaires.": "تأكد من أن لديك جميع الوثائق اللازمة.",
+  "Votre valise pour le séjour": "حقيبتك للإقامة",
+  "Préparez-vous avec des vêtements et vos essentiels.": "استعد بالملابس والضروريات الخاصة بك.",
+  "Pour votre bébé": "لطفلك",
+  "Préparez tous les essentiels de votre bébé.": "أعد جميع ضروريات طفلك.",
+  "Votre liste de contrôle": "قائمة التحقق الخاصة بك",
+  "Évaluez notre application": "قيم تطبيقنا",
+  "Jadore !": "أنا أحبه!",
+  "Vous naimez pas lapplication ? Dites-le nous.": "هل لا يعجبك التطبيق؟ أخبرنا.",
+  "Entrez votre évaluation ici...": "أدخل تقييمك هنا...",
+  "Envoyer": "إرسال",
+  "Merci pour votre évaluation !": "شكراً لتقييمك!",
+  "Fermer": "إغلاق",
+    "Requesting for camera permission": "طلب إذن الوصول إلى الكاميرا",
+    "No access to camera": "لا يوجد وصول إلى الكاميرا"
+  
+}

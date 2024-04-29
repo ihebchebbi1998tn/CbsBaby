@@ -1,0 +1,76 @@
+{
+  "settings.user": "User Settings",
+  "settings.name": "Mother's Name",
+  "settings.firstName": "First Name",
+  "settings.dob": "Date of Birth",
+  "settings.phone": "Phone",
+  "settings.username": "Username",
+  "settings.fileNumber": "File Number",
+  "settings.password": "Password",
+  "settings.save": "Save",
+  "AfterQuestions.title": "After Questions",
+  "AfterQuestions.noPostQuestions": "No post questions found",
+  "tabLabels": {
+    "Accueil": "Home",
+    "Conseils": "Tips",
+    "Aide": "Help",
+    "Profil": "Profile"
+  },
+  "sidebar": {
+    "Chat direct": "Direct Chat",
+    "Conseils": "Tips",
+    "Listes de contrôle": "Checklists",
+    "Paramètres": "Settings",
+    "Évaluez notre application": "Rate our app",
+    "Contact": "Contact",
+    "Deconnection": "Logout"
+  },
+  "chatbotPopup": {
+    "Need help?": "Need help?"
+  },
+  "contactModal": {
+    "clinicName": "Clinique Beau Séjour",
+    "address": "Rte GP1 - Km 6, Megrine 2033",
+    "close": "Close"
+  },
+  "directContact": {
+    "contactPrompt": "Would you like to contact a member of our staff directly?",
+    "noNurseAvailable": "Sorry, no nurse is available to respond.",
+    "close": "Close"
+  },
+  "interfaceLogin": {
+    "enterCredentials": "Please enter a username and password.",
+    "tableNotRecognized": "Table not recognized.",
+    "userDataInvalid": "User data not valid.",
+    "loginError": "An error occurred during login.",
+    "usernamePlaceholder": "Username",
+    "passwordPlaceholder": "Password",
+    "login": "Login",
+    "forgotCredentials": "Forgot your login credentials?",
+    "recover": "Recover here",
+    "close": "Close"
+  },
+  "posts": {
+    "searchPlaceholder": "Search by topic...",
+    "noPostsFound": "No posts found...",
+    "liked": "Liked",
+    "Share": "Share"
+  },
+  "Astuces pour maman": "Tips for Mom",
+  "Les documents à apporter": "Documents to Bring",
+  "Assurez-vous d'avoir tous les documents nécessaires.": "Make sure you have all the necessary documents.",
+  "Votre valise pour le séjour": "Your suitcase for the stay",
+  "Préparez-vous avec des vêtements et vos essentiels.": "Get ready with clothes and your essentials.",
+  "Pour votre bébé": "For your baby",
+  "Préparez tous les essentiels de votre bébé.": "Prepare all your baby's essentials.",
+  "Votre liste de contrôle": "Your Checklist",
+  "Évaluez notre application": "Rate our app",
+  "Jadore !": "I love it!",
+  "Vous naimez pas lapplication ? Dites-le nous.": "Don't like the app? Tell us.",
+  "Entrez votre évaluation ici...": "Enter your review here...",
+  "Envoyer": "Send",
+  "Merci pour votre évaluation !": "Thank you for your review!",
+  "Fermer": "Close",
+  "Requesting for camera permission": "Requesting for camera permission",
+  "No access to camera": "No access to camera"
+}

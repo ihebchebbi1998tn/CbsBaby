@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "249238450030",
+    "project_id": "cbsbebe-61b0b",
+    "storage_bucket": "cbsbebe-61b0b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249238450030:android:d3cd4f1c756613e8a15b7f",
+        "android_client_info": {
+          "package_name": "com.bebe.cbs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqXDt6eLPW-t3dwlvayeSbT1qmxp_FqkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

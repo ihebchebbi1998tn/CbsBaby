@@ -1,4 +1,5 @@
-import React from "react";
+// Import the required libraries and components
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -7,221 +8,301 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Header from "@mindinventory/rn-top-navbar";
 import { useNavigation } from "@react-navigation/native";
+import { BASE_URL } from "./Backend/apiConfig";
+import { SafeAreaView } from "react-native-safe-area-context";
+import NurseInfoBar from "./NurseInfoBar";
+import { UserContext } from "./Backend/UserContext";
+import { StatusBar } from "expo-status-bar";
+import HeaderNavbar from "./HeaderNavbar";
 
-const ChatListPage = ({ navigation }) => {
-  const yourImageSource = require("../assets/Images/logotransparent.png");
-  const maman1 = require("../assets/Images/maman1.png");
-  const maman2 = require("../assets/Images/maman2.png");
-  const maman3 = require("../assets/Images/maman3.png");
-  const maman4 = require("../assets/Images/maman4.png");
-  const maman5 = require("../assets/Images/maman5.png");
-
-  const userList = [
-    {
-      id: 1,
-      name: "Maman 1",
-      lastMessage: "Comment puis-je soutenir le développement moteur..",
-      image: maman1,
-      read: true,
-    },
-    {
-      id: 2,
-      name: "Maman 2",
-      lastMessage: "Je suis préoccupée par la façon..",
-      image: maman2,
-      read: false,
-    },
-    {
-      id: 3,
-      name: "Maman 3",
-      lastMessage: "Il se réveille souvent la nuit..",
-      image: maman3,
-      read: true,
-    },
-    {
-      id: 4,
-      name: "Maman 4",
-      lastMessage: "Oui, il a parfois des rougeurs..",
-      image: maman4,
-      read: false,
-    },
-    {
-      id: 5,
-      name: "Maman 5",
-      lastMessage: "Je suis préoccupée par la façon..",
-      image: maman5,
-      read: false,
-    },
-    {
-      id: 6,
-      name: "Maman 6",
-      lastMessage: "Je suis préoccupée par la façon..",
-      image: maman2,
-      read: false,
-    },
-    {
-      id: 7,
-      name: "Maman 7",
-      lastMessage: "Je suis préoccupée par la façon..",
-      image: maman2,
-      read: false,
-    },
-    {
-      id: 8,
-      name: "Maman 8",
-      lastMessage: "Je suis préoccupée par la façon..",
-      image: maman5,
-      read: false,
-    },
-  ];
-
-  const handleUserPress = (userId) => {
-    console.log(`Opening chat with User ${userId}`);
-  };
-
+const NoMessagesFound = () => {
   return (
-    <View style={styles.container}>
-      <Header style={{ backgroundColor: "#ff3366" }}>
-        <Header.Left style={{ backgroundColor: "#ff3366", width: "15%" }}>
-          <Ionicons name="arrow-back" style={{ color: "#fff", fontSize: 30 }} />
-        </Header.Left>
-        <Header.Body style={{ backgroundColor: "#ff3366", width: "100%" }}>
-          <Image source={yourImageSource} style={{ width: 125, height: 30 }} />
-        </Header.Body>
-
-        <Header.Right
-          style={{
-            backgroundColor: "#ff3366",
-            flexDirection: "row",
-            width: "15%",
-          }}
-          // ChatListPage component
-        >
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("InterfaceCommunication");
-            }}
-          >
-            <Ionicons name="create" style={{ color: "#fff", fontSize: 30 }} />
-          </TouchableOpacity>
-        </Header.Right>
-      </Header>
-
-      <View style={styles.searchContainer}>
-        <TextInput style={styles.searchInput} placeholder="Search..." />
-      </View>
-
-      <ScrollView style={{ flex: 1, padding: 16 }}>
-        {userList.map((user) => (
-          <TouchableOpacity
-            key={user.id}
-            style={styles.userContainer}
-            onPress={() => {
-              console.log(navigation); // Log navigation object
-              navigation.navigate("InterfaceCommunication");
-            }}
-          >
-            <Image source={user.image} style={styles.userImage} />
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{user.name}</Text>
-              <Text style={styles.lastMessage}>{user.lastMessage}</Text>
-            </View>
-            <View style={styles.readIndicatorContainer}>
-              {user.read ? (
-                <Ionicons name="checkmark-done" size={20} color="#4CAF50" />
-              ) : (
-                <Ionicons name="checkmark-outline" size={20} color="#FF3366" />
-              )}
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      <View style={styles.navbar}>
-      <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("InterfaceHomeClient");
-            }}
-          >
-        <Ionicons name="home" size={24} color="white" style={styles.navIcon} />
-        </TouchableOpacity>
-        <Ionicons name="mail" size={24} color="white" style={styles.navIcon} />
-        <Ionicons
-          name="person"
-          size={24}
-          color="white"
-          style={styles.navIcon}
-        />
-      </View>
+    <View style={styles.noMessagesContainer}>
+      <Text style={styles.noMessagesText}>
+        Aucun message pour le moment. Tous les messages seront reçus ici.
+      </Text>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f8f8f8",
-  },
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  searchInput: {
-    fontSize: 16,
-  },
-  userContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 16,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  userImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginRight: 16,
-  },
-  userInfo: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  lastMessage: {
-    fontSize: 16,
-    color: "#777",
-  },
-  readIndicatorContainer: {
-    marginLeft: 8,
-  },
-  navbar: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#ff3366",
-    height: 60,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  navIcon: {
-    // Add any specific styling for your icons if needed
-  },
-});
+// Main component for the chat list page
+const ChatListPage = () => {
+  const [userList, setUserList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
+  const { user } = useContext(UserContext);
+  const nurseid = user.id ;
+  // Function to fetch user data from the backend
+  const fetchUserData = useCallback(async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/bebeapp/api/Messaging/get_sessions_messages_nurse.php`);
+      if (!response.ok) {
+        console.error("Erreur lors de la récupération des données utilisateur :", response.statusText);
+        return;
+      }
+      const responseData = await response.text();
+      if (!responseData.trim() || responseData.trim() === "0 résultats") {
+        setUserList([]);
+        setLoading(false);
+        setRefreshing(false);
+        return;
+      }
+      const data = JSON.parse(responseData);
+      // Sort the data by message_time in ascending order
+      data.sort((a, b) => {
+        return new Date(a.last_message.message_time) - new Date(b.last_message.message_time);
+      });
+  
+      // Reverse the sorted data to get the earliest messages first
+      data.reverse();
+  
+      setUserList(data);
+      setLoading(false);
+      setRefreshing(false);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+  
+  
 
-export default ChatListPage;
+  useEffect(() => {
+    fetchUserData();
+    const intervalId = setInterval(fetchUserData, 3000);
+    return () => clearInterval(intervalId);
+  }, [fetchUserData]);
+
+  const handleUserPress = async (sessionId, sendby, nurseid, sendto ,token_key) => {
+    try {
+      // API endpoint to update the user2 field
+      const apiUrl = `${BASE_URL}bebeapp/api/Messaging/who_nurse_session.php?session_id=${sessionId}&user2_id=${nurseid}`;
+      // Make the API call to update the user2 field
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error("Failed to update user2 field");
+      }
+      // If user2 updated successfully, navigate to UserMessagesNurse screen
+      navigation.navigate('UserMessagesNurse', { sessionId, sendby, nurseid, sendto, from: "nurse" ,token_key});
+    } catch (error) {
+      console.error("Error updating user2:", error.message);
+      // Handle error condition here, if needed
+    }
+  };
+
+    const handleRefresh = () => {
+      setRefreshing(true);
+      fetchUserData();
+    };
+  
+const getTimeDifference = (messageTime, messageStatus) => {
+  // If message status is "read", always return green color
+  if (messageStatus === "read") {
+    return "#006400"; // Dark green color
+  }
+
+  const adjustedTime = new Date(messageTime);
+  adjustedTime.setHours(adjustedTime.getHours() + 1);
+  const currentTime = new Date();
+  const timeDifference = Math.abs(currentTime - adjustedTime);
+  const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+
+  // Check if the time difference is greater than 60 minutes
+  if (minutesDifference >= 60) {
+    const hoursDifference = Math.floor(minutesDifference / 60);
+    return `il y a ${hoursDifference} heures`; // Translated to French
+  } else {
+    return `il y a ${minutesDifference} minutes`; // Translated to French
+  }
+};
+
+  
+  const getMessageColor = (messageTime, messageStatus) => {
+    // If message status is "read", always return green color
+    if (messageStatus === "read") {
+      return "#006400"; // Dark green color
+    }
+  
+    // Calculate time difference for other cases
+    const adjustedTime = new Date(messageTime);
+    adjustedTime.setHours(adjustedTime.getHours() + 1);
+    const currentTime = new Date();
+    const timeDifference = Math.abs(currentTime - adjustedTime);
+    const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+  
+    if (minutesDifference >= 180) {
+      return "red"; // Dark red color for more than 3 hours
+    } else if (minutesDifference >= 30) {
+      return "orange"; // Dark orange color for more than 1 hour
+    } else {
+      return "#006400"; // Dark green color for more than 30 minutes
+    }
+  };
+  
+  
+    // Filter user list based on search query
+    const filteredUserList = userList.filter(
+      (user) =>
+        (user.last_message.sender_name && user.last_message.sender_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (user.last_message.sender_surname && user.last_message.sender_surname.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (user.last_message && user.last_message.message_text && user.last_message.message_text.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    
+    return (
+      <>
+      <StatusBar backgroundColor="#D84374" barStyle="light-content" />
+      <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'always' }}>
+        <HeaderNavbar />
+        <View style={styles.contentContainer}>
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={24} color="#888" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Recherche par nom ..."
+              placeholderTextColor="#888" // Placeholder text color
+              value={searchQuery}
+              onChangeText={(text) => setSearchQuery(text)}
+            />
+          </View>
+          {loading ? (
+            <ActivityIndicator size="large" color="#000" style={styles.loader} />
+          ) : filteredUserList.length === 0 ? (
+            <NoMessagesFound />
+          ) : (
+            <ScrollView
+              style={styles.scrollView}
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+            >
+              {filteredUserList.map((user) => (
+               <TouchableOpacity
+               key={user.session_id} 
+               style={[styles.userContainer, { borderColor: getMessageColor(user.last_message.message_time, user.last_message.status_message) }]}
+               onPress={() => handleUserPress(user.session_id , "123456789" , nurseid , user.sender_info.id , user.sender_info.token_key)}
+             >
+                  <Image
+                    source={{ uri: "https://cdn-icons-png.flaticon.com/512/4478/4478097.png" }}
+                    style={styles.userImage}
+                  />
+                  <View style={styles.messageContainer}>
+                    <Text style={styles.userName}>{user.sender_info.name} {user.sender_info.surname}</Text>
+                    <Text style={styles.lastMessage} numberOfLines={1}>{user.last_message.messenger} : {user.last_message.message_text}</Text>
+                    <Text style={[styles.timePassed, { color: getMessageColor(user.last_message.message_time, user.last_message.status_message) }]}>
+                      {getTimeDifference(user.last_message.message_time)}
+                    </Text> 
+                  </View>
+                  <Ionicons
+                    name={user.session_status === "active" ? user.last_message.status_message === "read" ? "checkmark-done" : "checkmark-outline" : "cloud-offline"} 
+                    size={20}
+                    color={user.last_message.status_message === "read" ? "#4CAF50" : "#e6acd8"} // Green color if read
+                    style={styles.finishedIcon}
+                  />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
+        </View>
+        
+      </SafeAreaView>
+      </>
+    );
+  };
+  
+  // Styles for the components
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "#fff",
+    },
+    contentContainer: {
+      flex: 1,
+      paddingTop: 16,
+    },
+    searchContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingBottom: 8,
+      backgroundColor: "#f8f8f8",
+      borderBottomWidth: 1,
+      borderBottomColor: "#ddd",
+      borderRadius: 8,
+      marginHorizontal: 16,
+      marginBottom: 16,
+    },
+    searchIcon: {
+      marginRight: 8,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 16,
+      color: "#333",
+      paddingVertical: 10, // Adjusting vertical padding
+    },
+    scrollView: {
+      flex: 1,
+    },
+    userContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: "#fff",
+      borderRadius: 8,
+      marginBottom: 12,
+      marginHorizontal: 16,
+      elevation: 2,
+      borderWidth: 2,
+    },
+    userImage: {
+      width: 60,
+      height: 60,
+      borderRadius: 30,
+      marginRight: 16,
+    },
+    messageContainer: {
+      flex: 1,
+    },
+    userName: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: "#333",
+    },
+    lastMessage: {
+      fontSize: 16,
+      color: "#777",
+      marginTop: 2,
+    },
+    timePassed: {
+      fontSize: 12,
+      marginTop: 2,
+    },
+    readIndicator: {
+      marginLeft: "auto",
+    },
+    loader: {
+      marginTop: 20,
+    },
+    noMessagesContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    noMessagesText: {
+      fontSize: 18,
+      color: "#777",
+      textAlign: "center",
+    },
+    finishedIcon: {
+      marginLeft: "auto",
+    },
+  });
+  
+  export default ChatListPage;

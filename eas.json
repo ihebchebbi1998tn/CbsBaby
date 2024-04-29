@@ -1,22 +1,20 @@
 {
   "cli": {
-    "version": ">= 7.2.0"
+    "version": ">= 7.6.2"
   },
   "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
     "preview": {
+      "ios": {
+        "simulator": true
+      },
       "android": {
         "buildType": "apk"
-      }
-    },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "preview3": {
-      "developmentClient": true
-    },
-    "preview4": {
+      },
+      
       "distribution": "internal"
     },
     "production": {}

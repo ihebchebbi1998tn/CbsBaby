@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import "react-native-gesture-handler";
-
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native";
 const LoginDefaultScreen = () => {
   const navigation = useNavigation();
 
@@ -15,9 +16,14 @@ const LoginDefaultScreen = () => {
   }, [navigation]);
 
   return (
+    <>
+    <StatusBar backgroundColor="#c64870" barStyle="light-content" />
+    <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'always' }}>
     <View style={styles.container}>
       <Image source={require("../assets/loading.gif")} style={styles.gif} />
     </View>
+    </SafeAreaView>
+    </>
   );
 };
 
@@ -29,7 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   gif: {
-    width: 75,
+    width: 60,
     height: 50,
   },
 });

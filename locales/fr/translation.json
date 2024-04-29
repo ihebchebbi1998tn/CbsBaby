@@ -1,0 +1,76 @@
+{
+  "settings.user": "Paramètres de l'utilisateur",
+  "settings.name": "Nom de la mère",
+  "settings.firstName": "Prénom",
+  "settings.dob": "Date de naissance",
+  "settings.phone": "Téléphone",
+  "settings.username": "Nom d'utilisateur",
+  "settings.fileNumber": "Numéro de dossier",
+  "settings.password": "Mot de passe",
+  "settings.save": "Enregistrer",
+  "page.title": "Après les questions",
+  "page.noPostQuestions": "Aucune question postale trouvée",
+  "tabLabels": {
+    "Accueil": "Accueil",
+    "Conseils": "Conseils",
+    "Aide": "Aide",
+    "Profil": "Profil"
+  },
+  "sidebar": {
+    "Chat direct": "Chat direct",
+    "Conseils": "Conseils",
+    "Listes de contrôle": "Listes de contrôle",
+    "Paramètres": "Paramètres",
+    "Évaluez notre application": "Évaluez notre application",
+    "Contact": "Contact",
+    "Deconnection": "Déconnexion"
+  },
+  "chatbotPopup": {
+    "Need help?": "Besoin d'aide ?"
+  },
+  "contactModal": {
+    "clinicName": "Clinique Beau Séjour",
+    "address": "Rte GP1 - Km 6, Megrine 2033",
+    "close": "Fermer"
+  },
+  "directContact": {
+    "contactPrompt": "Souhaitez-vous contacter un membre de notre personnel directement ?",
+    "noNurseAvailable": "Désolé, aucun infirmier n'est disponible pour répondre.",
+    "close": "Fermer"
+  },
+  "interfaceLogin": {
+    "enterCredentials": "Veuillez entrer un nom d'utilisateur et un mot de passe.",
+    "tableNotRecognized": "Table non reconnue.",
+    "userDataInvalid": "Données utilisateur non valides.",
+    "loginError": "Une erreur s'est produite lors de la connexion.",
+    "usernamePlaceholder": "Nom d'utilisateur",
+    "passwordPlaceholder": "Mot de passe",
+    "login": "Se connecter",
+    "forgotCredentials": "Vous avez oublié votre compte d'accès ?",
+    "recover": "Récupérer ici",
+    "close": "Fermer"
+  },
+  "posts": {
+    "searchPlaceholder": "Rechercher par sujet...",
+    "noPostsFound": "Aucun article trouvé...",
+    "liked": "Aimé",
+    "Share": "Partager"
+  },
+  "Astuces pour maman": "Conseils pour maman",
+  "Les documents à apporter": "Documents à apporter",
+  "Assurez-vous d'avoir tous les documents nécessaires.": "Assurez-vous d'avoir tous les documents nécessaires.",
+  "Votre valise pour le séjour": "Votre valise pour le séjour",
+  "Préparez-vous avec des vêtements et vos essentiels.": "Préparez-vous avec des vêtements et vos essentiels.",
+  "Pour votre bébé": "Pour votre bébé",
+  "Préparez tous les essentiels de votre bébé.": "Préparez tous les essentiels de votre bébé.",
+  "Votre liste de contrôle": "Votre liste de contrôle",
+  "Évaluez notre application": "Évaluez notre application",
+  "Jadore !": "J'adore !",
+  "Vous naimez pas lapplication ? Dites-le nous.": "Vous n'aimez pas l'application ? Dites-le nous.",
+  "Entrez votre évaluation ici...": "Entrez votre évaluation ici...",
+  "Envoyer": "Envoyer",
+  "Merci pour votre évaluation !": "Merci pour votre évaluation !",
+  "Fermer": "Fermer",
+  "Requesting for camera permission": "Demande d'autorisation d'accès à la caméra",
+  "No access to camera": "Pas d'accès à la caméra"
+}
