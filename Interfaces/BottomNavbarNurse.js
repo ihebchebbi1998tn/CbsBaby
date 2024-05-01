@@ -11,7 +11,6 @@ const BottomNavbarNurse = () => {
   };
 
   const getActiveRouteName = () => {
-    // Access the current route name from the navigation state
     return navigation.getState().routes[navigation.getState().index].name;
   };
 
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#FFF", // White Background Color
+    backgroundColor: "#FFF", 
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     elevation: 6,

@@ -56,6 +56,11 @@
     "liked": "Liked",
     "Share": "Share"
   },
+  "settings": {
+    "settings": "Settings",
+    "language": "Language",
+    "disconnect": "Disconnect"
+  },
   "Astuces pour maman": "Tips for Mom",
   "Les documents à apporter": "Documents to Bring",
   "Assurez-vous d'avoir tous les documents nécessaires.": "Make sure you have all the necessary documents.",

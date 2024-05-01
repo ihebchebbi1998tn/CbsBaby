@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, Image, Text, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +41,7 @@ const ChatbotPopup = () => {
 const styles = StyleSheet.create({
   popupButton: {
     position: 'absolute',
-    bottom: '10%',
+    bottom: '11%',
     right: 20,
     flexDirection: 'row',
     alignItems: 'center',

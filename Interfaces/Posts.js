@@ -1,65 +1,42 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import {
-  View,
-  Image,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  RefreshControl,
-  Platform,
-  Share,
-  useWindowDimensions,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { View, Image, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import { Video } from "expo-av";
+import { useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "./Backend/apiConfig";
 import { UserContext } from "./Backend/UserContext";
-import HTML from "react-native-render-html";
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#f1f3f5",
+    paddingHorizontal: 10, // Add horizontal padding
+    marginTop: 0, // Add margin top for the text
+    marginLeft: 10, // Add margin left
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+  scrollViewContent: {
+    flexGrow: 1, // Allow the content to grow to fill the available space
+    justifyContent: 'center', // Align posts to the center vertically
   },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    marginRight: 12,
-  },
-  line: {
-    height: 1,
-  },
-  noPostsText: {
-    textAlign: "center",
-    marginTop: 20,
-    fontSize: 16,
-    color: "#555",
+  latestArticlesText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8, // Add some space between the text and posts
+    marginRight: 15, // Add margin-right
+    marginTop: 8, // Add margin top
   },
   postCard: {
-    marginHorizontal: 16,
-    marginVertical: 8,
+    width: 300, // Adjust card width as needed
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#fff",
     elevation: 3,
+    marginHorizontal: 8, // Add horizontal margin
+    marginBottom: 16, // Add margin bottom
+    height: 280, // Adjusted card height
   },
   postImage: {
     width: "100%",
-    height: 200,
+    height: 150, // Adjust image height as needed
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
@@ -67,51 +44,80 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   postTitle: {
-    fontSize: 18,
+    fontSize: 16, // Decreased title font size
     fontWeight: "bold",
-    color: "#173879",
+    color: "#000", // Black color for title
     marginBottom: 8,
   },
-  postDescriptionContainer: {
-    maxHeight: 66,
+  categoryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  categoryText: {
+    fontSize: 14,
+    color: "#D84374", // Pink color for category
+    marginRight: 8,
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end', // Align to the right
+  },
+  dateText: {
+    fontSize: 12,
+    color: "#808080", // Gray color for date
+    marginLeft: 4, // Add some space between icon and text
+  },
+  loadingContainer: {
+    width: 300, // Adjust width to match post card width
+    borderRadius: 12,
     overflow: "hidden",
-    marginBottom: 10,
+    backgroundColor: "#f1f3f5",
+    elevation: 3,
+    marginHorizontal: 8, // Add horizontal margin
+    marginBottom: 16, // Add margin bottom
+    height: 280, // Adjusted card height
   },
-  postActions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#eee",
-    paddingTop: 8,
+  loadingImage: {
+    width: "100%",
+    height: 150, // Adjust image height as needed
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
-  actionButton: {
-    flexDirection: "row",
-    alignItems: "center",
+  loadingContent: {
+    padding: 16,
   },
-  actionIcon: {
-    marginRight: 6,
-    color: "#18387a",
+  loadingTitle: {
+    width: "80%", // Adjust width as needed
+    height: 20, // Adjust height to match title font size
+    marginBottom: 8,
+    backgroundColor: "#d1d5db", // Light gray background color
+    borderRadius: 4,
   },
-  commenticon: {
-    color: "#18387a",
-    marginLeft: 10,
+  loadingCategoryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
   },
-  actionText: {
-    color: "#D84374",
-    fontSize: 14,
-    fontWeight: "bold",
+  loadingCategoryText: {
+    width: 80, // Adjust width as needed
+    height: 14, // Adjust height to match category font size
+    marginRight: 8,
+    backgroundColor: "#d1d5db", // Light gray background color
+    borderRadius: 4,
   },
-  comment_count: {
-    color: "#D84374",
-    fontSize: 14,
-    fontWeight: "bold",
-    marginLeft: 6,
+  loadingDateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end', // Align to the right
   },
-  liked: {
-    color: "#18387a",
-    fontWeight: "bold",
+  loadingDateText: {
+    width: 40, // Adjust width as needed
+    height: 12, // Adjust height to match date font size
+    marginLeft: 4, // Add some space between icon and text
+    backgroundColor: "#d1d5db", // Light gray background color
+    borderRadius: 4,
   },
 });
 
@@ -121,7 +127,6 @@ const Posts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useContext(UserContext);
-  const windowWidth = useWindowDimensions().width;
   const navigation = useNavigation();
   const { t } = useTranslation();
 
@@ -140,12 +145,12 @@ const Posts = () => {
       return [];
     }
   };
-  
-  const fetchAndSetPosts = async () => {
+
+  const fetchAndSetPosts = useCallback(async () => {
     const data = await fetchPosts();
     setAllPosts(data);
     applyFiltersAndSort(data, searchQuery);
-  };
+  }, [searchQuery]);
 
   const applyFiltersAndSort = (posts, query) => {
     const filtered = posts.filter(
@@ -166,122 +171,31 @@ const Posts = () => {
 
   useEffect(() => {
     fetchAndSetPosts();
-  }, []);
+  }, [fetchAndSetPosts]);
 
-  const checkLike = async (post_id_checklike) => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}bebeapp/api/check_like_user.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `post_id_checklike=${post_id_checklike}&user_id_checklike=${user.id}`,
-        }
-      );
-      if (response.ok) {
-        const responseData = await response.json();
-        return responseData;
-      } else {
-        console.error("Error checking like:", response.statusText);
-        return { liked: false };
-      }
-    } catch (error) {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAndSetPosts();
+    }, 10000); // Fetch every 10 seconds
 
-      console.error("Error checking like:", error);
-      return { liked: false };
-    }
-  };
-
-  const likePost = async (post_id_likepost) => {
-    try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/like_post.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `post_id_likepost=${post_id_likepost}&user_id_likepost=${user.id}`,
-      });
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("Response data:", responseData);
-        fetchAndSetPosts();
-        return responseData;
-      } else {
-        console.error("Error toggling like:", response.statusText);
-        return { success: false, action: null };
-      }
-    } catch (error) {
-      console.error("Error toggling like:", error);
-      return { success: false, action: null };
-    }
-  };
+    return () => clearInterval(interval);
+  }, [fetchAndSetPosts]);
 
   const handleSearch = (text) => {
     setSearchQuery(text);
     applyFiltersAndSort(allPosts, text);
   };
 
-  const stripHtmlTags = (html) => {
-    return html.replace(/<[^>]+>/g, "");
-  };
-  
-  const buildShareMessage = (post) => {
-    const descriptionText = stripHtmlTags(post.descri_post);
-    return `${post.title_post}\nDescription: ${descriptionText}\n source = L'application mobile cbsbebe : https://www.cliniquebeausejour.tn/\n`;
-  };
-  
-  const sharePost = async (post) => {
-    const message = buildShareMessage(post);
-    console.log(message);
-    try {
-      let result;
-      if (Platform.OS === "ios") {
-        result = await Share.share({
-          message: message,
-          url: post.link, 
-        });
-      } else {
-        result = await Share.share({
-          message: message,
-        });
-      }
-  
-      if (result.action === Share.sharedAction) {
-        console.log("Content shared successfully");
-      } else if (result.action === Share.dismissedAction) {
-        console.log("Sharing dismissed");
-      }
-    } catch (error) {
-      console.error("Error sharing:", error.message);
-    }
-  };
-  
-  const handleSharePress = (post) => {
-    sharePost(post);
-  };
-
   return (
-    <ScrollView
-      contentContainerStyle={{ width: windowWidth }} // Set width directly
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder={t('posts.searchPlaceholder')}
-            value={searchQuery}
-            onChangeText={handleSearch}
-          />
-          <TouchableOpacity onPress={() => handleSearch(searchQuery)}>
-            <Ionicons name="search" size={24} color="#D84374" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line} />
+    <View style={styles.container}>
+      <Text style={styles.latestArticlesText}>LATEST ARTICLES</Text>
+      <ScrollView
+        horizontal // Enable horizontal scrolling
+        contentContainerStyle={styles.scrollViewContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {filteredPosts.length === 0 && (
           <Text style={styles.noPostsText}>{t('posts.noPostsFound')}</Text>
         )}
@@ -289,28 +203,31 @@ const Posts = () => {
           <Post
             key={index}
             post={post}
-            checkLike={checkLike}
-            likePost={likePost}
-            handleSharePress={handleSharePress} // Pass handleSharePress as a prop
             t={t} // Pass t function as a prop
           />
         ))}
-      </View>
-    </ScrollView>
+        {/* Placeholder loading */}
+        {refreshing && (
+          <View style={styles.loadingContainer}>
+            <View style={styles.loadingImage}></View>
+            <View style={styles.loadingContent}>
+              <View style={styles.loadingTitle}></View>
+              <View style={styles.loadingCategoryContainer}>
+                <View style={styles.loadingCategoryText}></View>
+              </View>
+              <View style={styles.loadingDateContainer}>
+                <View style={styles.loadingDateText}></View>
+              </View>
+            </View>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
-const Post = ({ post, checkLike, likePost, handleSharePress, t }) => {
+const Post = ({ post, t }) => {
   const navigation = useNavigation();
-  const [isLiked, setIsLiked] = useState(false);
-
-  useEffect(() => {
-    const fetchLikeStatus = async () => {
-      const response = await checkLike(post.id_post);
-      setIsLiked(response.liked);
-    };
-    fetchLikeStatus();
-  }, [checkLike, post.id_post]);
 
   const handleCardPress = () => {
     navigation.navigate("ViewPost", {
@@ -318,64 +235,31 @@ const Post = ({ post, checkLike, likePost, handleSharePress, t }) => {
     });
   };
 
-  const handleLikePress = async () => {
-    const response = await likePost(post.id_post);
-    setIsLiked(response.success ? !isLiked : isLiked);
-  };
-
   return (
     <TouchableOpacity onPress={handleCardPress}>
       <View style={styles.postCard}>
         {post.imagelink_post.endsWith(".mp4") ? (
           <Video
-            source={{
-              uri: `${BASE_URL}bebeapp/front/${post.imagelink_post}`,
-            }}
+            source={{ uri: `${BASE_URL}bebeapp/front/${post.imagelink_post}` }}
             style={styles.postImage}
             resizeMode="cover"
             useNativeControls={true}
           />
         ) : (
           <Image
-            source={{
-              uri: `${BASE_URL}bebeapp/front/${post.imagelink_post}`,
-            }}
+            source={{ uri: `${BASE_URL}bebeapp/front/${post.imagelink_post}` }}
             style={styles.postImage}
           />
         )}
         <View style={styles.postContent}>
-          <Text style={styles.postTitle}>{post.title_post}</Text>
-          <View style={styles.postDescriptionContainer}>
-            <HTML source={{ html: post.descri_post }} />
+          <View style={styles.categoryContainer}>
+            <Ionicons name="albums" size={16} color="#D84374" />
+            <Text style={styles.categoryText}>{post.category_post}</Text>
           </View>
-          <View style={styles.postActions}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={handleLikePress}
-            >
-              <Ionicons
-                name="heart"
-                size={20}
-                style={[styles.actionIcon, isLiked && styles.liked]}
-              />
-              <Text style={styles.actionText}>{`${post.likes_count}`}</Text>
-              <Ionicons name="chatbox" size={20} style={styles.commenticon} />
-              <Text
-                style={styles.comment_count}
-              >{`${post.comment_count}`}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => handleSharePress(post)} 
-            >
-              <Ionicons
-                name="share-social"
-                size={20}
-                style={styles.actionIcon}
-              />
-              <Text style={styles.actionText}>{t('posts.Share')}</Text>
-            </TouchableOpacity>
+          <Text style={styles.postTitle}>{post.title_post}</Text>
+          <View style={styles.dateContainer}>
+            <Ionicons name="calendar" size={16} color="#808080" />
+            <Text style={styles.dateText}>{post.createdat_post.split(" ")[0]}</Text>
           </View>
         </View>
       </View>

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useContext } from "react";
 import { View, Image, StyleSheet, Text, ActivityIndicator, StatusBar } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { UserContext } from "./Backend/UserContext";
 
 const LoadingScreen = ({ navigation }) => {
+  const { user } = useContext(UserContext);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       navigation.navigate("InterfaceLogin");
@@ -11,12 +13,11 @@ const LoadingScreen = ({ navigation }) => {
 
     return () => clearTimeout(timeout);
   }, [navigation]);
-
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
       <StatusBar backgroundColor="#c64870" barStyle="light-content" />
       <Image
-        source={require("../assets/splash.png")} // Modify the path to your background image
+        source={require("../assets/splash.png")} 
         style={styles.backgroundImage}
         resizeMode="cover"
       />

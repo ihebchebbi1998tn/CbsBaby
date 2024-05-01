@@ -41,7 +41,7 @@ const FirstPage = ({ route }) => {
   useEffect(() => {
     Animated.timing(animateText, {
       toValue: 1,
-      duration: 500,
+      duration: 7000,
       useNativeDriver: true,
     }).start();
   }, []);

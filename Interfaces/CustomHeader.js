@@ -31,7 +31,7 @@ const CustomHeader = () => {
   const { t } = useTranslation(); // Access translation function
 
   useEffect(() => {
-    const interval = setInterval(fetchNumberOfMessages, 2000);
+    const interval = setInterval(fetchNumberOfMessages, 10000);
     return () => clearInterval(interval);
   }, []);
 

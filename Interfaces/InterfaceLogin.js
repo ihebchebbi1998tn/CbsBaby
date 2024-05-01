@@ -79,7 +79,6 @@ const InterfaceLogin = () => {
             if (userData && userData.id) {
               if (userData.found_in_table === "maman") {
                 if (userData.connection === "0") {
-                  // If connection is 0 and found_in_table is maman, navigate to the first page
                   navigation.navigate("InterfaceHomeClient"); // Change to the appropriate page name
                 } else {
                   navigation.navigate("InterfaceHomeClient");

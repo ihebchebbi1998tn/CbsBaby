@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     alignItems: "center", 
-    backgroundColor: "rgba(255,255,255, 0.8)",
+    backgroundColor: "rgba(255,255,255, 0.9)",
   },
   modalTitle: {
     fontSize: 24, 

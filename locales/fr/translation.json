@@ -56,6 +56,11 @@
     "liked": "Aimé",
     "Share": "Partager"
   },
+  "settings": {
+    "settings": "Paramètres",
+    "language": "Langue",
+    "disconnect": "Déconnexion"
+  },
   "Astuces pour maman": "Conseils pour maman",
   "Les documents à apporter": "Documents à apporter",
   "Assurez-vous d'avoir tous les documents nécessaires.": "Assurez-vous d'avoir tous les documents nécessaires.",

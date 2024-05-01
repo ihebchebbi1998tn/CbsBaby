@@ -17,13 +17,13 @@
     "Profil": "الملف الشخصي"
   },
   "sidebar": {
-    "Chat direct": "الدردشة المباشرة",
+    "Chat direct": "محادثة",
     "Conseils": "نصائح",
     "Listes de contrôle": "قوائم التحقق",
     "Paramètres": "الإعدادات",
     "Évaluez notre application": "قيم تطبيقنا",
     "Contact": "اتصل بنا",
-    "Deconnection": "تسجيل الخروج"
+    "Deconnection": " الخروج"
   },
   "chatbotPopup": {
     "Need help?": "هل تحتاج إلى مساعدة ؟"
@@ -49,6 +49,11 @@
     "forgotCredentials": "هل نسيت بيانات الدخول الخاصة بك؟",
     "recover": "استرد هنا",
     "close": "إغلاق"
+  },
+  "settings": {
+    "settings": "الإعدادات",
+    "language": "اللغة",
+    "disconnect": "خروج"
   },
   "posts": {
     "searchPlaceholder": "البحث حسب الموضوع...",

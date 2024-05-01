@@ -26,7 +26,7 @@ const DirectContact = () => {
       setTimeout(() => {
         check_availble();
       }, 5000);
-    }, 2000);
+    }, 5000);
   };
 
   const check_availble = async () => {
