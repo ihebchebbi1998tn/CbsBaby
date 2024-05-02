@@ -54,12 +54,19 @@
     "searchPlaceholder": "Rechercher par sujet...",
     "noPostsFound": "Aucun article trouvé...",
     "liked": "Aimé",
-    "Share": "Partager"
+    "Share": "Partager",
+    "latest": "Derniers articles",
+    "tips" : "Conseils" ,
+    "cancel": "Annuler"
+
   },
   "settings": {
     "settings": "Paramètres",
     "language": "Langue",
-    "disconnect": "Déconnexion"
+    "disconnect": "Déconnexion" ,
+    "confirmation": "confirmation"  ,
+    "confirmationtext": "Êtes-vous sûr de vouloir changer la langue ?",
+    "ok" : "oui"
   },
   "Astuces pour maman": "Conseils pour maman",
   "Les documents à apporter": "Documents à apporter",
@@ -77,5 +84,12 @@
   "Merci pour votre évaluation !": "Merci pour votre évaluation !",
   "Fermer": "Fermer",
   "Requesting for camera permission": "Demande d'autorisation d'accès à la caméra",
-  "No access to camera": "Pas d'accès à la caméra"
+  "No access to camera": "Pas d'accès à la caméra",
+  "ARTICLES": "Articles",
+  "VIDEOS": "Vidéos",
+  "SEARCH_ARTICLES": "Rechercher des articles 🔎",
+  "SEARCH_VIDEOS": "Rechercher des vidéos 🔎",
+  "BABY_CATEGORY": "Bébé 0-12 mois",
+  "GENERAL_CATEGORY": "Général",
+  "BLOG_CATEGORY": "Blog"
 }

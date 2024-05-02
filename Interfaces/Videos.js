@@ -37,12 +37,13 @@ const styles = StyleSheet.create({
   },
   videoCategory: {
     fontSize: 14,
-    color: "#888",
-    marginBottom: 4,
+    color: "#D84374", // Pink color for category
+    marginRight: 8,
   },
-  videoDate: {
+  dateText: {
     fontSize: 12,
-    color: "#888",
+    color: "#808080", // Gray color for date
+    marginRight: 4, // Add some space between icon and text
   },
   modalContainer: {
     flex: 1,
@@ -84,6 +85,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     zIndex: 1,
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  categoryText: {
+    fontSize: 14,
+    color: "#D84374", // Pink color for category
+    marginRight: 8,
   },
 });
 
@@ -191,10 +202,16 @@ const Videos = () => {
             <View style={styles.videoCard}>
               <Image source={{ uri: video.thumbnail }} style={styles.videoThumbnail} />
               <View style={styles.videoInfoContainer}>
-                <Text style={styles.videoTitle}>{video.title}</Text>
-                <Text style={styles.videoCategory}>{video.category}</Text>
-                <Text style={styles.videoDate}>{video.date}</Text>
-              </View>
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <View style={styles.categoryContainer}>
+      <Ionicons name="albums" size={16} color="#D84374" />
+      <Text style={styles.categoryText}>{video.category}</Text>
+    </View>
+    <Text style={styles.dateText}>{video.date}</Text>
+  </View>
+  <Text style={styles.videoTitle}>{video.title}</Text>
+</View>
+
             </View>
           </TouchableOpacity>
         ))}

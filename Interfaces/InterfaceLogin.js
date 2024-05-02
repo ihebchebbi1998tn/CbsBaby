@@ -26,11 +26,12 @@ const InterfaceLogin = () => {
   const [password, setPassword] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const { updateUser } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const navigation = useNavigation();
   const route = useRoute();
+  const { user, updateUser } = useContext(UserContext); // Get user context
+
   const { scannedUsername } = route.params || { scannedUsername: "" };
 
   useEffect(() => {
@@ -112,13 +113,13 @@ const InterfaceLogin = () => {
     }
   };
   
-  
+
 
   useEffect(() => {
-    updateUser(null);
-  }, []);
-
-
+    if (user && Object.keys(user).length !== 0) {
+      navigation.navigate("InterfaceHomeClient");
+    }
+  }, [user]); // Trigger effect when user object changes
   return (
     <>
       <StatusBar backgroundColor="#D84374" barStyle="light-content" />

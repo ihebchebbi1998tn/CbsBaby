@@ -20,8 +20,8 @@ i18n
       },
     },
     compatibilityJSON: 'v3', 
-    lng: 'ar', // Default language
-    fallbackLng: 'ar', // Fallback language if translation is missing
+    lng: 'fr', // Default language
+    fallbackLng: 'fr', // Fallback language if translation is missing
     interpolation: {
       escapeValue: false,
     },

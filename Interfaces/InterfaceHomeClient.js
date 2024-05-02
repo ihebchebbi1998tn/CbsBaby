@@ -17,6 +17,8 @@ import Posts from "./Posts";
 import Videos from "./Videos"; // Import the Videos component
 import { useLanguage } from './LanguageContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import PostsTips from "./PostsTips";
 
 const styles = StyleSheet.create({
   container: {
@@ -89,6 +91,7 @@ const InterfaceHomeClient = () => {
   const { user } = useContext(UserContext);
   const { changeLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState("ARTICLES");
+  const { t, i18n } = useTranslation(); // Access translation function
 
   useEffect(() => {
     if (user) {
@@ -107,14 +110,14 @@ const InterfaceHomeClient = () => {
               onPress={() => setActiveTab("ARTICLES")}
               style={[styles.buttonText, activeTab === "ARTICLES" && styles.activeButton]}
             >
-              <Text style={styles.buttonText}>ARTICLES</Text>
+              <Text style={styles.buttonText}>{t("ARTICLES")}</Text>
               {activeTab === "ARTICLES" && <View style={[styles.line, { left: 0 }]} />}
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setActiveTab("VIDEOS")}
               style={[styles.buttonText, activeTab === "VIDEOS" && styles.activeButton]}
             >
-              <Text style={styles.buttonText}>VIDEOS</Text>
+              <Text style={styles.buttonText}>{t("VIDEOS")}</Text>
               {activeTab === "VIDEOS" && <View style={[styles.line, { right: 0 }]} />}
             </TouchableOpacity>
           </View>
@@ -124,34 +127,33 @@ const InterfaceHomeClient = () => {
                 <View style={styles.searchContainer}>
                   <TextInput
                     style={styles.searchInput}
-                    placeholder="Search articles"
+                    placeholder={t("SEARCH_ARTICLES")}
                     placeholderTextColor="#6B7280"
                   />
-                  <Ionicons name="search" size={24} color="#6B7280" style={styles.searchIcon} />
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
                   {/* Render static categories */}
-                  <Text style={styles.categoryItem}>Baby 0-12 month</Text>
-                  <Text style={styles.categoryItem}>General</Text>
-                  <Text style={styles.categoryItem}>Blog</Text>
+                  <Text style={styles.categoryItem}>{t("BABY_CATEGORY")}</Text>
+                  <Text style={styles.categoryItem}>{t("GENERAL_CATEGORY")}</Text>
+                  <Text style={styles.categoryItem}>{t("BLOG_CATEGORY")}</Text>
                 </ScrollView>
                 <Posts />
+                <PostsTips />
               </>
             )}
             {activeTab === "VIDEOS" && <>
                 <View style={styles.searchContainer}>
                   <TextInput
                     style={styles.searchInput}
-                    placeholder="Search articles"
+                    placeholder={t("SEARCH_VIDEOS")}
                     placeholderTextColor="#6B7280"
                   />
-                  <Ionicons name="search" size={24} color="#6B7280" style={styles.searchIcon} />
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
                   {/* Render static categories */}
-                  <Text style={styles.categoryItem}>Baby 0-12 month</Text>
-                  <Text style={styles.categoryItem}>General</Text>
-                  <Text style={styles.categoryItem}>Blog</Text>
+                  <Text style={styles.categoryItem}>{t("BABY_CATEGORY")}</Text>
+                  <Text style={styles.categoryItem}>{t("GENERAL_CATEGORY")}</Text>
+                  <Text style={styles.categoryItem}>{t("BLOG_CATEGORY")}</Text>
                 </ScrollView>
                 <Videos />
               </>}

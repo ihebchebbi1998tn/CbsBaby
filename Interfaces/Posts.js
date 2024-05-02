@@ -6,6 +6,7 @@ import { BASE_URL } from "./Backend/apiConfig";
 import { UserContext } from "./Backend/UserContext";
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
+import { useLanguage } from './LanguageContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -128,7 +129,8 @@ const Posts = () => {
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useContext(UserContext);
   const navigation = useNavigation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation(); // Access translation function
+  const { changeLanguage } = useLanguage();
 
   const fetchPosts = async () => {
     try {
@@ -145,6 +147,12 @@ const Posts = () => {
       return [];
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      changeLanguage(user.language);
+    }
+  }, [user, changeLanguage]);
 
   const fetchAndSetPosts = useCallback(async () => {
     const data = await fetchPosts();
@@ -188,7 +196,7 @@ const Posts = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.latestArticlesText}>LATEST ARTICLES</Text>
+      <Text style={styles.latestArticlesText}>{t('posts.latest')}</Text>
       <ScrollView
         horizontal // Enable horizontal scrolling
         contentContainerStyle={styles.scrollViewContent}
@@ -254,7 +262,7 @@ const Post = ({ post, t }) => {
         <View style={styles.postContent}>
           <View style={styles.categoryContainer}>
             <Ionicons name="albums" size={16} color="#D84374" />
-            <Text style={styles.categoryText}>{post.category_post}</Text>
+            <Text style={styles.categoryText}>{" "}{post.category_post}</Text>
           </View>
           <Text style={styles.postTitle}>{post.title_post}</Text>
           <View style={styles.dateContainer}>
