@@ -42,7 +42,6 @@ const BottomNavbar = () => {
 
   const TabButton = ({ icon, activeIcon, label, screen }) => {
     const activeRouteName = getActiveRouteName();
-
     return (
       <TouchableOpacity
         style={[
@@ -53,7 +52,7 @@ const BottomNavbar = () => {
       >
         <Ionicons
           name={activeRouteName === screen ? activeIcon : icon}
-          size={24}
+          size={20}
           color={activeRouteName === screen ? "#D84374" : "#AAA"}
         />
         {activeRouteName === screen && (
@@ -92,14 +91,10 @@ const BottomNavbar = () => {
       try {
         const { uri } = await cameraRef.current.takePictureAsync();
         console.log("Picture taken:", uri);
-  
-        // Assuming you have userID and dateTaken available here
-        const userID = user.id; // Replace with the actual user ID
-        const dateTaken = new Date().toISOString(); // Replace with the actual date
-  
-        // Call uploadImage function with the userID, dateTaken, and uri
+        const userID = user.id; 
+        const dateTaken = new Date().toISOString();
         await uploadImage(userID, dateTaken, uri);
-        closeCamera(); // Close the camera after taking the picture
+        closeCamera(); 
       } catch (error) {
         console.error("Error taking picture:", error);
       }
@@ -152,7 +147,7 @@ const BottomNavbar = () => {
             style={styles.cameraIcon}
             onPress={openCamera} 
           >
-            <Ionicons name="camera" size={34} color="#FFF" />
+            <Ionicons name="camera" size={32} color="#FFF" />
           </TouchableOpacity>
         </View>
         <TabButton
@@ -168,10 +163,7 @@ const BottomNavbar = () => {
           screen="InterfaceClientPage"
         />
       </View>
-
-      {/* Camera View */}
       <CameraView />
-      
     </View>
   );
 };

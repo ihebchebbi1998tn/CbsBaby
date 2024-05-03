@@ -39,7 +39,6 @@ const ChatListPage = () => {
   const navigation = useNavigation();
   const { user } = useContext(UserContext);
   const nurseid = user.id ;
-  // Function to fetch user data from the backend
   const fetchUserData = useCallback(async () => {
     try {
       const response = await fetch(`${BASE_URL}/bebeapp/api/Messaging/get_sessions_messages_nurse.php`);
@@ -55,14 +54,10 @@ const ChatListPage = () => {
         return;
       }
       const data = JSON.parse(responseData);
-      // Sort the data by message_time in ascending order
       data.sort((a, b) => {
         return new Date(a.last_message.message_time) - new Date(b.last_message.message_time);
       });
-  
-      // Reverse the sorted data to get the earliest messages first
       data.reverse();
-  
       setUserList(data);
       setLoading(false);
       setRefreshing(false);
@@ -72,7 +67,6 @@ const ChatListPage = () => {
       setRefreshing(false);
     }
   }, []);
-  
   
 
   useEffect(() => {

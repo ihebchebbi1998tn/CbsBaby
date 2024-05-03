@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Videos = () => {
+const Videos = (props) => {
   const [videos, setVideos] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -106,6 +106,7 @@ const Videos = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackInstance, setPlaybackInstance] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { searchQuery } = props;
 
   const videoRef = useRef(null);
 
@@ -117,9 +118,9 @@ const Videos = () => {
         "https://videos.pexels.com/video-files/15921892/15921892-uhd_3840_2160_50fps.mp4",
         "https://videos.pexels.com/video-files/9844511/9844511-hd_1080_1920_30fps.mp4",
       ];
-  
+
       // Return an array of video objects
-      return videoUrls.map((url, index) => ({
+      const videos = videoUrls.map((url, index) => ({
         id: index,
         title: `Video ${index + 1}`,
         category: `Category ${index + 1}`,
@@ -127,6 +128,17 @@ const Videos = () => {
         thumbnail: `https://via.placeholder.com/400x400.png?text=Video+${index + 1}`, // Placeholder image
         videoUrl: url,
       }));
+
+      // If search query exists, filter videos based on the query
+      if (searchQuery) {
+        return videos.filter(
+          (video) =>
+            video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            video.category.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      return videos;
     } catch (error) {
       console.error("Error fetching videos:", error);
       return [];
@@ -202,16 +214,15 @@ const Videos = () => {
             <View style={styles.videoCard}>
               <Image source={{ uri: video.thumbnail }} style={styles.videoThumbnail} />
               <View style={styles.videoInfoContainer}>
-  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-    <View style={styles.categoryContainer}>
-      <Ionicons name="albums" size={16} color="#D84374" />
-      <Text style={styles.categoryText}>{video.category}</Text>
-    </View>
-    <Text style={styles.dateText}>{video.date}</Text>
-  </View>
-  <Text style={styles.videoTitle}>{video.title}</Text>
-</View>
-
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <View style={styles.categoryContainer}>
+                    <Ionicons name="albums" size={16} color="#D84374" />
+                    <Text style={styles.categoryText}>{video.category}</Text>
+                  </View>
+                  <Text style={styles.dateText}>{video.date}</Text>
+                </View>
+                <Text style={styles.videoTitle}>{video.title}</Text>
+              </View>
             </View>
           </TouchableOpacity>
         ))}

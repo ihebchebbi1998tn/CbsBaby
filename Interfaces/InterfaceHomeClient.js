@@ -15,15 +15,17 @@ import BottomNavbar from "./BottomNavbar";
 import CustomHeader from "./CustomHeader";
 import Posts from "./Posts";
 import Videos from "./Videos"; // Import the Videos component
-import { useLanguage } from './LanguageContext';
-import { Ionicons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import { useLanguage } from "./LanguageContext";
+import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 import PostsTips from "./PostsTips";
-
+import PostsTipsScroll from "./PostsTipsScroll";
+import { KeyboardAvoidingView } from "react-native";
+import { Platform } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f1f3f5", // Background color for the container
+    backgroundColor: "#f1f3f5",
   },
   separator: {
     flexDirection: "row",
@@ -32,7 +34,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#D84374",
     paddingBottom: 5,
-    marginHorizontal: 20,
+    paddingHorizontal: 20,
   },
   buttonText: {
     fontSize: 16,
@@ -42,11 +44,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   line: {
-    position: 'absolute',
+    position: "absolute",
     bottom: -1,
     height: 2,
-    backgroundColor: '#D84374',
-    width: '50%',
+    backgroundColor: "#D84374",
+    width: "50%",
   },
   searchContainer: {
     flexDirection: "row",
@@ -63,27 +65,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginRight: 10,
-    backgroundColor: "#EFF0F6", // Background color for the input
-    color: "#6B7280", // Text color for the input
-  },
-  searchIcon: {
-    position: 'absolute',
-    right: '13%',
+    backgroundColor: "#fff",
+    color: "#6B7280",
   },
   categoryContainer: {
     paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  categoryScrollView: {
-    flexDirection: "row",
+    marginBottom: 0,
   },
   categoryItem: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
-    backgroundColor: "#D1D5DB", // Background color for the category item
-    color: "#1F2937", // Text color for the category item
-    marginRight: 10, // Added marginRight for spacing between categories
+    backgroundColor: "#D1D5DB",
+    color: "#1F2937",
+    marginRight: 10,
+  },
+  goBackContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingHorizontal: 20,
+  },
+  goBackText: {
+    color: "#D84374",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingTop: 10, // Adjust as needed
   },
 });
 
@@ -91,7 +102,9 @@ const InterfaceHomeClient = () => {
   const { user } = useContext(UserContext);
   const { changeLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState("ARTICLES");
-  const { t, i18n } = useTranslation(); // Access translation function
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { t, i18n } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -99,69 +112,143 @@ const InterfaceHomeClient = () => {
     }
   }, [user, changeLanguage]);
 
+  const categories = [
+    { translated: t("1_CATEGORY"), nonTranslated: "Pregnancy Tips" },
+    { translated: t("2_CATEGORY"), nonTranslated: "Labor & Delivery" },
+    { translated: t("3_CATEGORY"), nonTranslated: "Prenatal Care" },
+    { translated: t("4_CATEGORY"), nonTranslated: "Postpartum Support" },
+    { translated: t("5_CATEGORY"), nonTranslated: "Newborn Care" },
+    { translated: t("6_CATEGORY"), nonTranslated: "Breastfeeding Advice" },
+    { translated: t("7_CATEGORY"), nonTranslated: "Baby Development" },
+    { translated: t("8_CATEGORY"), nonTranslated: "Parenting Essentials" },
+    { translated: t("9_CATEGORY"), nonTranslated: "Parental Wellness" },
+    { translated: t("10_CATEGORY"), nonTranslated: "Nutrition Advice" },
+  ];
+
+  const handleCategoryPress = (category) => {
+    setSelectedCategory({
+      translated: category.translated,
+      nonTranslated: category.nonTranslated,
+    });
+    setActiveTab("ARTICLES");
+  };
+
+  const handleGoBack = () => {
+    setSelectedCategory(null);
+  };
+
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+  };
+
   return (
     <>
-      <StatusBar backgroundColor="#D84374" barStyle="light-content" />
-      <SafeAreaView style={{ flex: 1 }} forceInset={{ top: "always" }}>
-        <View style={styles.container}>
-          <CustomHeader />
-          <View style={styles.separator}>
-            <TouchableOpacity
-              onPress={() => setActiveTab("ARTICLES")}
-              style={[styles.buttonText, activeTab === "ARTICLES" && styles.activeButton]}
-            >
-              <Text style={styles.buttonText}>{t("ARTICLES")}</Text>
-              {activeTab === "ARTICLES" && <View style={[styles.line, { left: 0 }]} />}
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setActiveTab("VIDEOS")}
-              style={[styles.buttonText, activeTab === "VIDEOS" && styles.activeButton]}
-            >
-              <Text style={styles.buttonText}>{t("VIDEOS")}</Text>
-              {activeTab === "VIDEOS" && <View style={[styles.line, { right: 0 }]} />}
-            </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <StatusBar backgroundColor="#D84374" barStyle="light-content" />
+        <SafeAreaView style={{ flex: 1 }} forceInset={{ top: "always" }}>
+          <View style={styles.container}>
+            <CustomHeader />
+            <View style={styles.separator}>
+              <TouchableOpacity
+                onPress={() => setActiveTab("ARTICLES")}
+                style={[
+                  styles.buttonText,
+                  activeTab === "ARTICLES" && styles.activeButton,
+                ]}
+              >
+                <Text style={styles.buttonText}>{t("ARTICLES")}</Text>
+                {activeTab === "ARTICLES" && (
+                  <View style={[styles.line, { left: 0 }]} />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setActiveTab("VIDEOS")}
+                style={[
+                  styles.buttonText,
+                  activeTab === "VIDEOS" && styles.activeButton,
+                ]}
+              >
+                <Text style={styles.buttonText}>{t("VIDEOS")}</Text>
+                {activeTab === "VIDEOS" && (
+                  <View style={[styles.line, { right: 0 }]} />
+                )}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder={t("SEARCH_ARTICLES")}
+                placeholderTextColor="#6B7280"
+                onChangeText={handleSearch} // Call handleSearch when text changes
+              />
+            </View>
+            <View style={styles.categoryContainer}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {categories.map((category, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleCategoryPress(category)}
+                  >
+                    <Text style={styles.categoryItem}>
+                      {category.translated}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+            <View style={styles.contentContainer}>
+              <ScrollView>
+                {activeTab === "ARTICLES" && (
+                  <>
+                    {selectedCategory ? (
+                      <View>
+                        <TouchableOpacity
+                          onPress={handleGoBack}
+                          style={styles.goBackContainer}
+                        >
+                          <Ionicons
+                            name="arrow-back"
+                            size={24}
+                            color="#D84374"
+                          />
+                          <Text style={styles.goBackText}>{t("GoBack")}</Text>
+                        </TouchableOpacity>
+                        <PostsTipsScroll
+                          searchQuery={searchQuery}
+                          parameterTranslated={selectedCategory.translated}
+                          parameter={selectedCategory.nonTranslated}
+                        />
+                      </View>
+                    ) : (
+                      <>
+                        <Posts searchQuery={searchQuery} />
+                        {categories.map((category, index) => (
+                          <PostsTips
+                            key={index}
+                            parameterTranslated={category.translated}
+                            parameter={category.nonTranslated}
+                            searchQuery={searchQuery}
+                          />
+                        ))}
+                      </>
+                    )}
+                  </>
+                )}
+                {activeTab === "VIDEOS" && (
+                  <>
+                    <Videos  searchQuery={searchQuery} />
+                  </>
+                )}
+              </ScrollView>
+            </View>
+            <ChatbotPopup />
+            <BottomNavbar />
           </View>
-          <ScrollView>
-            {activeTab === "ARTICLES" && (
-              <>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    style={styles.searchInput}
-                    placeholder={t("SEARCH_ARTICLES")}
-                    placeholderTextColor="#6B7280"
-                  />
-                </View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-                  {/* Render static categories */}
-                  <Text style={styles.categoryItem}>{t("BABY_CATEGORY")}</Text>
-                  <Text style={styles.categoryItem}>{t("GENERAL_CATEGORY")}</Text>
-                  <Text style={styles.categoryItem}>{t("BLOG_CATEGORY")}</Text>
-                </ScrollView>
-                <Posts />
-                <PostsTips />
-              </>
-            )}
-            {activeTab === "VIDEOS" && <>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    style={styles.searchInput}
-                    placeholder={t("SEARCH_VIDEOS")}
-                    placeholderTextColor="#6B7280"
-                  />
-                </View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-                  {/* Render static categories */}
-                  <Text style={styles.categoryItem}>{t("BABY_CATEGORY")}</Text>
-                  <Text style={styles.categoryItem}>{t("GENERAL_CATEGORY")}</Text>
-                  <Text style={styles.categoryItem}>{t("BLOG_CATEGORY")}</Text>
-                </ScrollView>
-                <Videos />
-              </>}
-          </ScrollView>
-          <ChatbotPopup />
-          <BottomNavbar />
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </>
   );
 };

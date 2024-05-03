@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import { View, Image, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, TextInput } from "react-native";
 import { Video } from "expo-av";
 import { useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "./Backend/apiConfig";
@@ -120,17 +120,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#d1d5db", // Light gray background color
     borderRadius: 4,
   },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 16,
+  },
 });
 
-const Posts = () => {
+const Posts = (props) => {
   const [allPosts, setAllPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useContext(UserContext);
   const navigation = useNavigation();
   const { t, i18n } = useTranslation(); // Access translation function
   const { changeLanguage } = useLanguage();
+  const {  searchQuery } = props;
 
   const fetchPosts = async () => {
     try {

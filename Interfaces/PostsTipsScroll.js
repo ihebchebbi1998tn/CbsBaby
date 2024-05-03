@@ -1,32 +1,41 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { Video } from "expo-av";
 import { useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "./Backend/apiConfig";
 import { UserContext } from "./Backend/UserContext";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
-import { useLanguage } from './LanguageContext';
+import { useLanguage } from "./LanguageContext";
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 10, // Add horizontal padding
+    paddingHorizontal: 5, // Add horizontal padding
     marginTop: 0, // Add margin top for the text
-    marginLeft: 10, // Add margin left
+    justifyContent: "center", // Align posts to the center vertically
+    marginLeft: "10%",
   },
   scrollViewContent: {
     flexGrow: 1, // Allow the content to grow to fill the available space
-    justifyContent: 'center', // Align posts to the center vertically
+    justifyContent: "center", // Align posts to the center vertically
   },
   latestArticlesText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8, // Add some space between the text and posts
     marginRight: 15, // Add margin-right
     marginTop: 8, // Add margin top
   },
   postCard: {
-    width: 300, // Adjust card width as needed
+    width: "85%", // Adjust card width as needed
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#fff",
@@ -51,8 +60,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   categoryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 2,
   },
   categoryText: {
@@ -61,9 +70,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end', // Align to the right
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end", // Align to the right
   },
   dateText: {
     fontSize: 12,
@@ -90,15 +99,15 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   loadingTitle: {
-    width: "80%", // Adjust width as needed
+    width: "100%", // Adjust width as needed
     height: 20, // Adjust height to match title font size
     marginBottom: 8,
     backgroundColor: "#d1d5db", // Light gray background color
     borderRadius: 4,
   },
   loadingCategoryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 4,
   },
   loadingCategoryText: {
@@ -109,9 +118,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   loadingDateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end', // Align to the right
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end", // Align to the right
   },
   loadingDateText: {
     width: 40, // Adjust width as needed
@@ -122,21 +131,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const PostsTips = (props) => {
-  const { parameter } = props; 
-  const { parameterTranslated} = props;
-  const {  searchQuery } = props;
+const PostsTipsScroll = (props) => {
+  const { parameter, parameterTranslated, searchQuery } = props;
+
   const [allPosts, setAllPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useContext(UserContext);
   const navigation = useNavigation();
-  const { t, i18n } = useTranslation(); 
+  const { t, i18n } = useTranslation();
   const { changeLanguage } = useLanguage();
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts_category.php?category=${encodeURIComponent(parameter)}`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts.php`);
       if (response.ok) {
         const data = await response.json();
         return data;
@@ -163,18 +171,17 @@ const PostsTips = (props) => {
   }, [searchQuery]);
 
   const applyFiltersAndSort = (posts, query) => {
-    const filtered = posts.filter(
-      (post) =>
-        post.title_post &&
-        post.title_post.toLowerCase().includes(query.toLowerCase())
-    );
-
-    // Sort filtered posts by date in descending order
-    filtered.sort((a, b) => new Date(b.createdat_post) - new Date(a.createdat_post));
-
+    let filtered = posts;
+    if (query) {
+      filtered = posts.filter(
+        (post) =>
+          post.title_post &&
+          post.title_post.toLowerCase().includes(query.toLowerCase())
+      );
+    }
     setFilteredPosts(filtered);
   };
-
+  
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchAndSetPosts()
@@ -184,8 +191,8 @@ const PostsTips = (props) => {
 
   useEffect(() => {
     fetchAndSetPosts();
-  }, [fetchAndSetPosts]);
-
+  }, [fetchAndSetPosts, searchQuery]);
+  
   useEffect(() => {
     const interval = setInterval(() => {
       fetchAndSetPosts();
@@ -194,17 +201,13 @@ const PostsTips = (props) => {
     return () => clearInterval(interval);
   }, [fetchAndSetPosts]);
 
-  const handleSeeAllPress = () => {
-    // Handle navigation to see all posts
-  };
+  const handleSeeAllPress = () => {};
 
   return (
     <View style={styles.container}>
-      {filteredPosts.length > 0 && (
-        <Text style={styles.latestArticlesText}>{parameter}</Text>
-      )}
+      <Text style={styles.latestArticlesText}>{parameterTranslated}</Text>
       <ScrollView
-        horizontal // Enable horizontal scrolling
+        vertical // Enable horizontal scrolling
         contentContainerStyle={styles.scrollViewContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -264,12 +267,14 @@ const Post = ({ post, t }) => {
         <View style={styles.postContent}>
           <View style={styles.categoryContainer}>
             <Ionicons name="albums" size={16} color="#D84374" />
-            <Text style={styles.categoryText}>{" "}{post.category_post}</Text>
+            <Text style={styles.categoryText}> {post.category_post}</Text>
           </View>
           <Text style={styles.postTitle}>{post.title_post}</Text>
           <View style={styles.dateContainer}>
             <Ionicons name="calendar" size={16} color="#808080" />
-            <Text style={styles.dateText}>{post.createdat_post.split(" ")[0]}</Text>
+            <Text style={styles.dateText}>
+              {post.createdat_post.split(" ")[0]}
+            </Text>
           </View>
         </View>
       </View>
@@ -277,4 +282,4 @@ const Post = ({ post, t }) => {
   );
 };
 
-export default PostsTips;
+export default PostsTipsScroll;

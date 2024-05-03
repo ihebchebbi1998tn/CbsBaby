@@ -16,6 +16,7 @@ import BottomNavbar from "./BottomNavbar";
 import ChatbotPopup from "./ChatbotPopup";
 import { StatusBar } from "expo-status-bar";
 import { useTranslation } from "react-i18next";
+import InterfaceListeControle from "./InterfaceListeControle";
 
 const InterfaceConseilClient = () => {
   const navigation = useNavigation();
@@ -32,12 +33,10 @@ const InterfaceConseilClient = () => {
 
   const handleFirstCarouselPress = () => {
     console.log("First carousel pressed");
-    // ... add your logic for the first carousel press
   };
 
   const handleSecondCarouselPress = () => {
     console.log("Second carousel pressed");
-    // ... add your logic for the second carousel press
   };
 
   const checklistItems = [
@@ -142,38 +141,7 @@ const InterfaceConseilClient = () => {
     <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'always' }}>
     <View style={styles.container}>
       <CustomHeader />
-      <View style={styles.content}>
-        <ScrollView>
-          <Text style={styles.heading}>{t("Astuces pour maman")}</Text>
-          <Carousel
-            ref={carouselRef}
-            data={adviceImages}
-            renderItem={renderCarouselItem}
-            sliderWidth={350}
-            itemWidth={300}
-            onSnapToItem={(index) => setActiveSlide(index)}
-          />
-          <Pagination
-            dotsLength={adviceImages.length}
-            activeDotIndex={activeSlide}
-            containerStyle={styles.paginationContainer}
-            dotStyle={styles.paginationDot}
-            inactiveDotStyle={styles.paginationInactiveDot}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-          />
-          <Text style={[styles.heading, { marginTop: 30 }]}>
-            {t("Votre liste de contrôle")}
-          </Text>
-          <FlatList
-            data={checklistItems}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={renderChecklistItem}
-            scrollEnabled={false}
-          />
-        </ScrollView>
-      </View>
-
+     <InterfaceListeControle />
       <ChatbotPopup />
       <BottomNavbar />
     </View>

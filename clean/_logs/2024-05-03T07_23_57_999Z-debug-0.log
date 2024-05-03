@@ -7,9 +7,8 @@
 6 silly config:load:file:C:\Users\ihebc\AppData\Roaming\npm\etc\npmrc
 7 verbose title npm start
 8 verbose argv "start"
-9 verbose logfile logs-max:10 dir:C:\CBS\ConnectCBS\clean\_logs\2024-05-01T13_09_33_024Z-
-10 verbose logfile C:\CBS\ConnectCBS\clean\_logs\2024-05-01T13_09_33_024Z-debug-0.log
+9 verbose logfile logs-max:10 dir:C:\CBS\ConnectCBS\clean\_logs\2024-05-03T07_23_57_999Z-
+10 verbose logfile C:\CBS\ConnectCBS\clean\_logs\2024-05-03T07_23_57_999Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files
-13 verbose exit 0
-14 info ok
+13 http fetch GET 200 https://registry.npmjs.org/npm 236ms

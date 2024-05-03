@@ -89,7 +89,15 @@
   "VIDEOS": "Vidéos",
   "SEARCH_ARTICLES": "Rechercher des articles 🔎",
   "SEARCH_VIDEOS": "Rechercher des vidéos 🔎",
-  "BABY_CATEGORY": "Bébé 0-12 mois",
-  "GENERAL_CATEGORY": "Général",
-  "BLOG_CATEGORY": "Blog"
+  "1_CATEGORY": "Conseils Grossesse",
+  "2_CATEGORY": "Accouchement & Naissance",
+  "3_CATEGORY": "Soins Prénataux",
+  "4_CATEGORY": "Soutien Postnatal",
+  "5_CATEGORY": "Soins Nouveau-né",
+  "6_CATEGORY": "Allaitement Maternel",
+  "7_CATEGORY": "Développement Bébé",
+  "8_CATEGORY": "Essentiels Parentaux",
+  "9_CATEGORY": "Parentalité Bien-être",
+  "10_CATEGORY": "Conseils Nutrition",
+  "GoBack": "Retourner"
 }

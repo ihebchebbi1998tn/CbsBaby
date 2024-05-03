@@ -14,6 +14,18 @@ const InputMessage = ({ sessionId, recieverID }) => {
   const { user } = useContext(UserContext);
   const SENDER_ID = user ? user.id : "";
 
+  const handleToggleCamera = () => {
+    if (!isTyping) {
+      handleImageUpload();
+    } else {
+      handleBackPress();
+    }
+  };
+
+const handleBackPress = () => {
+  setMessage(""); // Clear the message state
+  setIsTyping(false); // Revert to camera view
+};
   const handleTyping = (text) => {
     setMessage(text);
     setIsTyping(text.length > 0); 
@@ -245,9 +257,10 @@ const InputMessage = ({ sessionId, recieverID }) => {
   
   return (
     <View style={styles.inputContainer}>
-      <TouchableOpacity onPress={toggleCamera} style={styles.imageUploadButton}>
-        {!isTyping && <Ionicons name="camera" size={24} color="#D84374" />}
-      </TouchableOpacity>
+<TouchableOpacity onPress={handleToggleCamera} style={styles.imageUploadButton}>
+  {!isTyping && <Ionicons name="camera" size={24} color="#D84374" />}
+  {isTyping && <Ionicons name="chevron-back-outline" size={24} color="#D84374" />}
+</TouchableOpacity>
       <TextInput
         style={[styles.input, isTyping && styles.expandedInput]}
         placeholder="Type a message..."

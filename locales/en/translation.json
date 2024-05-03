@@ -89,8 +89,16 @@
     "VIDEOS": "Videos",
     "SEARCH_ARTICLES": "Search articles 🔎",
     "SEARCH_VIDEOS": "Search videos 🔎",
-    "BABY_CATEGORY": "Baby 0-12 month",
-    "GENERAL_CATEGORY": "General",
-    "BLOG_CATEGORY": "Blog"
- 
+    "1_CATEGORY": "Pregnancy Tips",
+    "2_CATEGORY": "Labor & Delivery",
+    "3_CATEGORY": "Prenatal Care",
+    "4_CATEGORY": "Postpartum Support",
+    "5_CATEGORY": "Newborn Care",
+    "6_CATEGORY": "Breastfeeding Advice",
+    "7_CATEGORY": "Baby Development",
+    "8_CATEGORY": "Parenting Essentials",
+    "9_CATEGORY": "Parental Wellness",
+    "10_CATEGORY": "Nutrition Advice" ,
+    "GoBack": "Go back"
+
 }

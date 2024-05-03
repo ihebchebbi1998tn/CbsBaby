@@ -5,11 +5,13 @@
 4 silly config:load:file:C:\CBS\ConnectCBS\.npmrc
 5 silly config:load:file:C:\Users\ihebc\.npmrc
 6 silly config:load:file:C:\Users\ihebc\AppData\Roaming\npm\etc\npmrc
-7 verbose title npm start
-8 verbose argv "start"
-9 verbose logfile logs-max:10 dir:C:\CBS\ConnectCBS\clean\_logs\2024-05-02T10_48_20_227Z-
-10 verbose logfile C:\CBS\ConnectCBS\clean\_logs\2024-05-02T10_48_20_227Z-debug-0.log
+7 verbose title npm install react-native-screensgit add
+8 verbose argv "install" "react-native-screensgit" "add" "-A"
+9 verbose logfile logs-max:10 dir:C:\CBS\ConnectCBS\clean\_logs\2024-05-03T15_16_07_086Z-
+10 verbose logfile C:\CBS\ConnectCBS\clean\_logs\2024-05-03T15_16_07_086Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files
-13 verbose exit 0
-14 info ok
+13 silly idealTree buildDeps
+14 silly fetch manifest react-native-screensgit@*
+15 http fetch GET 404 https://registry.npmjs.org/react-native-screensgit 1059ms (cache skip)
+16 silly fetch manifest add@*
