@@ -1,4 +1,4 @@
-import React , { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {
   View,
@@ -11,26 +11,28 @@ import {
   Image,
   SafeAreaView,
   ActivityIndicator,
-  Clipboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "./Backend/apiConfig";
 import { UserContext } from "./Backend/UserContext";
-import { registerForPushNotificationsAsync } from "./Backend/NotificationService"; // Import the function here
+import { registerForPushNotificationsAsync } from "./Backend/NotificationService";
 import { StatusBar } from "expo-status-bar";
 import QRCodeIcon from "./RCodeIcon";
 import { useRoute } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const InterfaceLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const navigation = useNavigation();
   const route = useRoute();
-  const { user, updateUser } = useContext(UserContext); // Get user context
+  const { user, updateUser } = useContext(UserContext);
 
   const { scannedUsername } = route.params || { scannedUsername: "" };
 
@@ -58,32 +60,28 @@ const InterfaceLogin = () => {
   
       setTimeout(async () => {
         try {
-          const expoPushToken = await registerForPushNotificationsAsync(); // Retrieve the Expo push token
+          const expoPushToken = await registerForPushNotificationsAsync();
           const url = `${BASE_URL}bebeapp/api/authentification/authentification.php?file_number=${encodeURIComponent(
             username
-          )}&password=${encodeURIComponent(
-            password
-          )}&token_key=encodeURIComponent(expoPushToken)`; // Fixed the URL syntax issue
-    
+          )}&password=${encodeURIComponent(password)}&token_key=${encodeURIComponent(expoPushToken)}`;
+  
           const response = await fetch(url);
-          console.log(url);
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
-  
           const data = await response.json();
-          console.log(data);
           if (data.success) {
             const userData = data.user_data;
-            updateUser(data.user_data);
+            updateUser(userData);
+  
+            // Save user data in AsyncStorage
+            await AsyncStorage.setItem('userData', JSON.stringify(userData));
+  
+            console.log('User data saved to AsyncStorage:', userData);
   
             if (userData && userData.id) {
               if (userData.found_in_table === "maman") {
-                if (userData.connection === "0") {
-                  navigation.navigate("InterfaceHomeClient"); // Change to the appropriate page name
-                } else {
-                  navigation.navigate("InterfaceHomeClient");
-                }
+                navigation.navigate("InterfaceHomeClient");
               } else if (userData.found_in_table === "sagefemme") {
                 navigation.navigate("InterfaceHomeNurse");
               } else {
@@ -114,16 +112,10 @@ const InterfaceLogin = () => {
   };
   
 
-
-  useEffect(() => {
-    if (user && Object.keys(user).length !== 0) {
-      navigation.navigate("InterfaceHomeClient");
-    }
-  }, [user]); // Trigger effect when user object changes
   return (
     <>
-      <StatusBar backgroundColor="#D84374" barStyle="light-content" />
-      <SafeAreaView style={{ flex: 1 }} forceInset={{ top: "always" }}>
+      <StatusBar backgroundColor="#d84374" barStyle="light-content" />
+      <SafeAreaView style={styles.container}>
         <ImageBackground
           source={require("../assets/bglogin.png")}
           style={styles.backgroundImage}
@@ -136,25 +128,31 @@ const InterfaceLogin = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Nom d'utilisateur"
-                placeholderTextColor="#D84374"
+                placeholderTextColor="#d84374"
                 value={username}
                 onChangeText={(text) => setUsername(text)}
               />
-              <QRCodeIcon
-                style={styles.qrIcon}
-                onScan={handleScan}
-              />
+              <QRCodeIcon style={styles.qrIcon} onScan={handleScan} />
             </View>
             <View style={styles.inputContainer}>
               <Ionicons name="lock-closed-outline" style={styles.icon} />
               <TextInput
                 style={styles.input}
                 placeholder="Mot de passe"
-                secureTextEntry
-                placeholderTextColor="#D84374"
+                secureTextEntry={!showPassword}
+                placeholderTextColor="#d84374"
                 value={password}
                 onChangeText={(text) => setPassword(text)}
               />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye" : "eye-off"}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
             </View>
             <TouchableOpacity
               style={styles.loginButton}
@@ -162,26 +160,31 @@ const InterfaceLogin = () => {
               disabled={loading}
             >
               {loading ? (
-                <ActivityIndicator color="#8ccad1" />
+                <ActivityIndicator color="#90ced3" />
               ) : (
                 <View style={styles.buttonContent}>
-                  <Text style={styles.loginButtonText}>
-                    Connexion
-                  </Text>
+                  <Text style={styles.loginButtonText}>Connexion</Text>
                   <Ionicons name="arrow-forward" style={styles.iconbutton} />
                 </View>
               )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={() => navigation.navigate("SignupScreen")}
+            >
+              <Text style={styles.signupButtonText}>Créer un compte</Text>
+              <Ionicons name="person-add-outline" style={styles.iconbutton} />
+
             </TouchableOpacity>
             <View style={styles.signupContainer}>
               <Text style={styles.signupText}>
                 Vous avez oublié vos identifiants ?
               </Text>
               <TouchableOpacity onPress={() => {}}>
-                <Text style={styles.signupLink}>
-                  Récupérer
-                </Text>
+                <Text style={styles.signupLink}>Récupérer</Text>
               </TouchableOpacity>
             </View>
+         
             <Modal
               animationType="slide"
               transparent={true}
@@ -199,9 +202,7 @@ const InterfaceLogin = () => {
                       setModalVisible(false);
                     }}
                   >
-                    <Text style={styles.textStyle}>
-                      Fermer
-                    </Text>
+                    <Text style={styles.textStyle}>Fermer</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -213,16 +214,16 @@ const InterfaceLogin = () => {
   );
 };
 
-// Define component styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
   },
   content: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 25,
   },
   backgroundImage: {
     flex: 1,
@@ -230,83 +231,111 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   logo: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
+    width: 180,
+    height: 180,
+    marginBottom: 30,
   },
   inputContainer: {
     alignItems: "center",
-    width: "80%",
-    borderColor: "#D84374",
+    width: "100%",
+    borderColor: "#d84374",
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 10,
     marginVertical: 10,
     paddingHorizontal: 10,
-    position: "relative",
     flexDirection: "row",
+    backgroundColor: "#ffffff",
   },
   input: {
     flex: 1,
-    height: 40,
+    height: 45,
     fontSize: 16,
+    paddingHorizontal: 10,
+    color: "#163878",
   },
   icon: {
-    color: "#D84374",
+    color: "#d84374",
     fontSize: 24,
     marginLeft: 5,
-    marginRight: 5,
+    marginRight: 10,
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: '-0%',
+    top: "14%",
+    padding: 5,
   },
   qrIcon: {
     position: "absolute",
-    right: "5%", // Adjusted position for LTR languages
-    top: "-30%", // Centered vertically
-    fontSize: 24, // Adjusted font size
+    right: 5,
+    top: "1%",
+    transform: [{ translateY: -12 }],
+    fontSize: 24,
+    color: "#d84374",
   },
   loginButton: {
-    backgroundColor: "#143a7b",
-    padding: 12,
-    borderRadius: 8,
-    width: "80%",
+    backgroundColor: "#d84374",
+    padding: 10,
+    borderRadius: 10,
+    width: "100%",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 5,
   },
   buttonContent: {
     flexDirection: "row",
     alignItems: "center",
   },
   loginButtonText: {
-    color: "#8ccad1",
-    fontSize: 16,
-    marginRight: 5,
+    color: "#fff",
+    fontSize: 18,
+    marginRight: 10,
   },
   signupContainer: {
     marginTop: 20,
+    flexDirection: "row",
+    alignItems: "center",
   },
-  signupText: {
-    color: "#D84374",
-    marginRight: 5,
-    fontSize: 12,
-  },
-  signupLink: {
-    color: "#143a7b",
-    fontWeight: "bold",
-    fontSize: 12,
+   signupButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    marginRight: 10,
   },
   iconbutton: {
-    color: "#8ccad1",
-    fontSize: 15,
+    color: "#90ced3",
+    fontSize: 18,
+  },
+  signupLink: {
+    color: "#163878",
+    fontWeight: "bold",
+    fontSize: 14,
+    marginLeft: 5,
+  },
+  signupButton: {
+    backgroundColor: "#163878",
+    padding: 10,
+    borderRadius: 10,
+    width: "100%",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  signupButtonText: {
+    color: "#fff",
+    fontSize: 18,
+  },
+  iconbutton: {
+    color: "#90ced3",
+    fontSize: 18,
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
   },
   modalView: {
     margin: 20,
-    backgroundColor: "rgba(217,66,116, 0.5)", // Adjusted background color and opacity
-    borderRadius: 20,
-    padding: 25, // Adjusted padding
+    backgroundColor: "#163878",
+    borderRadius: 10,
+    padding: 30,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -318,23 +347,24 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   openButton: {
-    backgroundColor: "#fff",
+    backgroundColor: "#90ced3",
     borderRadius: 20,
-    paddingVertical: 10, // Adjusted padding
-    paddingHorizontal: 20, // Adjusted padding
+    padding: 10,
+    paddingHorizontal: 20,
     elevation: 2,
-    marginTop: 0, // Adjusted margin
+    marginTop: 20,
   },
   textStyle: {
-    color: "#D84374",
+    color: "#d84374",
     fontWeight: "bold",
     textAlign: "center",
+    fontSize: 16,
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 0,
     textAlign: "center",
-    fontSize: 16, // Adjusted font size
-    color: "#143a7b", // Adjusted text color
+    fontSize: 16,
+    color: "#ffffff",
   },
 });
 

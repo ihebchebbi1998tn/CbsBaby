@@ -25,8 +25,8 @@ const DirectContact = () => {
       setModalVisible(!modalVisible);
       setTimeout(() => {
         check_availble();
-      }, 5000);
-    }, 5000);
+      }, 2000);
+    }, 2000);
   };
 
   const check_availble = async () => {
@@ -89,7 +89,6 @@ const DirectContact = () => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Image source={require('../assets/Images/NurseIcon.jpg')} style={styles.imageStyle} />
             {!responseReceived && <ActivityIndicator size="large" color="#de5983" />}
             {responseReceived && responseStatus === false && (
               <View>

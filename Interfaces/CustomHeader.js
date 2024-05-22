@@ -11,13 +11,15 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Header from "@mindinventory/rn-top-navbar";
 import { useNavigation } from "@react-navigation/native";
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 import { BASE_URL } from "./Backend/apiConfig";
 import { UserContext } from "./Backend/UserContext";
 import ContactModal from "./ContactModal";
 import Rating from "./Rating";
 import UserSettingsModal from "./UserSettingsModal";
 const YourImageSource = require("../assets/logowhite.png");
+import { PanResponder } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CustomHeader = () => {
   const navigation = useNavigation();
@@ -29,6 +31,7 @@ const CustomHeader = () => {
   const [isRatingModalVisible, setRatingModalVisible] = useState(false);
   const [isUserSettingsModalOpen, setIsUserSettingsModalOpen] = useState(false);
   const { t } = useTranslation(); // Access translation function
+  const [pan] = useState(new Animated.ValueXY());
 
   useEffect(() => {
     const interval = setInterval(fetchNumberOfMessages, 10000);
@@ -89,9 +92,40 @@ const CustomHeader = () => {
       useNativeDriver: false,
     }).start(() => {
       setIsSidebarOpen(false);
+      pan.setValue({ x: 0, y: 0 }); // Reset the pan value
     });
   };
 
+  const swipePanResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: (evt, gestureState) => {
+      if (gestureState.dx < -50) {
+        pan.setValue({ x: gestureState.dx, y: 0 });
+      }
+    },
+    onPanResponderRelease: (evt, gestureState) => {
+      if (gestureState.dx < -50) {
+        closeSidebar();
+      } else {
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start();
+      }
+    },
+  });
+
+  const handleLogout = async () => {
+    try {
+      // Remove the user data from AsyncStorage
+      await AsyncStorage.removeItem("userData");
+
+      // Navigate to the InterfaceLogin screen
+      navigation.navigate("InterfaceLogin");
+    } catch (error) {
+      console.error("Error clearing AsyncStorage:", error);
+    }
+  };
   const openModal = () => {
     setIsModalOpen(true);
     closeSidebar();
@@ -112,7 +146,7 @@ const CustomHeader = () => {
 
   const openUserSettingsModal = () => {
     setIsUserSettingsModalOpen(true);
-    closeSidebar(); 
+    closeSidebar();
   };
 
   const sidebarTranslateX = animation.interpolate({
@@ -132,8 +166,13 @@ const CustomHeader = () => {
         <Animated.View
           style={[
             styles.sidebar,
-            { transform: [{ translateX: sidebarTranslateX }] },
+            {
+              transform: [
+                { translateX: Animated.add(pan.x, sidebarTranslateX) },
+              ],
+            },
           ]}
+          {...swipePanResponder.panHandlers} // Apply the PanResponder to the sidebar
         >
           <TouchableOpacity style={styles.closeButton} onPress={closeSidebar}>
             <Ionicons
@@ -157,28 +196,26 @@ const CustomHeader = () => {
                   name="chatbubble-ellipses-outline"
                   style={styles.sidebarIcon}
                 />
-                <Text style={styles.sidebarText}>{t('sidebar.Chat direct')}</Text>
+                <Text style={styles.sidebarText}>
+                  {t("sidebar.Chat direct")}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.sidebarItem}
-                onPress={() => navigation.navigate("InterfaceConseilClientOnly")}
+                onPress={() => navigation.navigate("InterfaceConseilClient")}
               >
-                <Ionicons
-                  name="heart-half-outline"
-                  style={styles.sidebarIcon}
-                />
-                <Text style={styles.sidebarText}>{t('sidebar.Conseils')}</Text>
+                <Ionicons name="bed-outline" style={styles.sidebarIcon} />
+                <Text style={styles.sidebarText}>{t("sidebar.Conseils")}</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.sidebarItem}
-                onPress={() => navigation.navigate("InterfaceListeControle")}
+                onPress={openUserSettingsModal}
               >
-                <Ionicons name="clipboard-outline" style={styles.sidebarIcon} />
-                <Text style={styles.sidebarText}>{t('sidebar.Listes de contrôle')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.sidebarItem} onPress={openUserSettingsModal}>
                 <Ionicons name="options" style={styles.sidebarIcon} />
-                <Text style={styles.sidebarText}>{t('sidebar.Paramètres')}</Text>
+                <Text style={styles.sidebarText}>
+                  {t("sidebar.Paramètres")}
+                </Text>
               </TouchableOpacity>
               <View style={styles.separator}></View>
               <TouchableOpacity
@@ -186,20 +223,22 @@ const CustomHeader = () => {
                 onPress={openRatingModal}
               >
                 <Ionicons name="star-half" style={styles.sidebarIcon} />
-                <Text style={styles.sidebarText}>{t('sidebar.Évaluez notre application')}</Text>
+                <Text style={styles.sidebarText}>
+                  {t("sidebar.Évaluez notre application")}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.sidebarItem} onPress={openModal}>
                 <Ionicons name="mail" style={styles.sidebarIcon} />
-                <Text style={styles.sidebarText}>{t('sidebar.Contact')}</Text>
+                <Text style={styles.sidebarText}>{t("sidebar.Contact")}</Text>
               </TouchableOpacity>
             </View>
           </View>
           <TouchableOpacity
             style={styles.deconnectionButton}
-            onPress={() => navigation.navigate("InterfaceLogin")}
+            onPress={handleLogout}
           >
             <Ionicons name="log-out" style={[styles.icon, { color: "#fff" }]} />
-            <Text style={styles.sidebarText}>{t('sidebar.Deconnection')}</Text>
+            <Text style={styles.sidebarText}>{t("sidebar.Deconnection")}</Text>
           </TouchableOpacity>
         </Animated.View>
       </Modal>
@@ -247,7 +286,10 @@ const CustomHeader = () => {
           </View>
         </TouchableOpacity>
       </Modal>
-      <UserSettingsModal isVisible={isUserSettingsModalOpen} onClose={() => setIsUserSettingsModalOpen(false)} />
+      <UserSettingsModal
+        isVisible={isUserSettingsModalOpen}
+        onClose={() => setIsUserSettingsModalOpen(false)}
+      />
     </View>
   );
 };
@@ -303,7 +345,7 @@ const styles = StyleSheet.create({
   },
   messageCount: {
     color: "#fff",
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "bold",
   },
   sidebar: {

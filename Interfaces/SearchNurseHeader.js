@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { View, ActivityIndicator, StyleSheet, Text, Image } from "react-native";
 import { BASE_URL } from "./Backend/apiConfig";
 import ProfilePicture from "../assets/Images/nurseimage.jpg";
+import { useTranslation } from 'react-i18next';
 
 const SearchNurseHeader = ({ sessionId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [nurseData, setNurseData] = useState(null);
   const [error, setError] = useState(null);
   const [offline, setOffline] = useState(false);
+  const { t, i18n } = useTranslation(); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,7 +69,8 @@ const SearchNurseHeader = ({ sessionId }) => {
         <View style={[styles.activeIndicator, { backgroundColor: offline ? "red" : "green" }]} />
         <Image source={ProfilePicture} style={styles.profilePicture} />
         <View style={styles.textContainer}>
-          <Text style={styles.offlineText}>Nous sommes hors ligne.</Text>
+          <Text style={styles.offlineText}>{t('Chat.PersonneRepondre1')}</Text>
+          <Text style={styles.offlineText}>{t('Chat.PersonneRepondre2')}</Text>
         </View>
       </View>
         
@@ -141,9 +144,9 @@ const styles = StyleSheet.create({
     color: "red",
   },
   offlineText: {
-    alignSelf: "center",
     color: "#666",
-    fontStyle: "italic",
+    fontSize: 12,
+
   },
 });
 

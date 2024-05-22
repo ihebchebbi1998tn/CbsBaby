@@ -1,27 +1,48 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, Modal, Image, Button, Dimensions, SafeAreaView, ActivityIndicator } from "react-native";
-import { Video, AVPlaybackStatus } from "expo-av";
-import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
+import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity,
+  Modal,
+  Image,
+  ActivityIndicator,
+  Dimensions,
+  SafeAreaView
+} from "react-native";
+import { Video } from "expo-av";
+import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from 'react-i18next';
+import { BASE_URL } from "./Backend/apiConfig";
+import { UserContext } from "./Backend/UserContext";
 
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f9f9f9",
     paddingHorizontal: 10,
-    marginTop: 0,
+    marginTop: 10,
     alignItems: 'center',
   },
   scrollViewContent: {
     alignItems: 'center',
+    paddingBottom: 20,
   },
   videoCard: {
     width: width - 40,
     borderRadius: 12,
     overflow: "hidden",
-    backgroundColor: "#f1f3f5",
+    backgroundColor: "#ffffff",
     elevation: 3,
     marginVertical: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   videoThumbnail: {
     width: "100%",
@@ -33,47 +54,53 @@ const styles = StyleSheet.create({
   videoTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#333",
     marginBottom: 8,
   },
-  videoCategory: {
+  categoryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  categoryText: {
     fontSize: 14,
-    color: "#D84374", // Pink color for category
+    color: "#D84374",
     marginRight: 8,
   },
   dateText: {
     fontSize: 12,
-    color: "#808080", // Gray color for date
-    marginRight: 4, // Add some space between icon and text
+    color: "#808080",
+    marginRight: 4,
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
   },
   modalContent: {
-    width,
-    height,
+    width: width * 0.95,
+    height: height * 0.65,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 10,
+    overflow: "hidden",
+    backgroundColor: '#000',
   },
   fullscreenVideo: {
-    width,
-    height,
+    width: "100%",
+    height: "90%",
   },
   controlBar: {
-    position: 'absolute',
-    bottom: '3%',
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    width: "100%",
+    height: "10%",
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    paddingHorizontal: 10,
   },
   controlButton: {
-    padding: 8,
+    padding: 10,
   },
   closeButton: {
     position: 'absolute',
@@ -86,75 +113,47 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     zIndex: 1,
   },
-  categoryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 2,
-  },
-  categoryText: {
-    fontSize: 14,
-    color: "#D84374", // Pink color for category
-    marginRight: 8,
-  },
 });
 
-const Videos = (props) => {
+const Videos = ({ searchQuery }) => {
   const [videos, setVideos] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackInstance, setPlaybackInstance] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const { searchQuery } = props;
-
+  const { t } = useTranslation();
   const videoRef = useRef(null);
+  const { user } = useContext(UserContext);
+  const [isLoading, setLoading] = useState(true);
 
   const fetchVideos = async () => {
     try {
-      // Hardcode the video URLs
-      const videoUrls = [
-        "https://videos.pexels.com/video-files/20770858/20770858-hd_1080_1920_30fps.mp4",
-        "https://videos.pexels.com/video-files/15921892/15921892-uhd_3840_2160_50fps.mp4",
-        "https://videos.pexels.com/video-files/9844511/9844511-hd_1080_1920_30fps.mp4",
-      ];
-
-      // Return an array of video objects
-      const videos = videoUrls.map((url, index) => ({
-        id: index,
-        title: `Video ${index + 1}`,
-        category: `Category ${index + 1}`,
-        date: "May 1, 2024",
-        thumbnail: `https://via.placeholder.com/400x400.png?text=Video+${index + 1}`, // Placeholder image
-        videoUrl: url,
-      }));
-
-      // If search query exists, filter videos based on the query
+      const response = await fetch(`${BASE_URL}bebeapp/api/get_videos.php?output_lang=${user.language}`);
+      const videoData = await response.json();
       if (searchQuery) {
-        return videos.filter(
+        const filteredVideos = videoData.filter(
           (video) =>
             video.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             video.category.toLowerCase().includes(searchQuery.toLowerCase())
         );
+        setVideos(filteredVideos);
+      } else {
+        setVideos(videoData);
       }
-
-      return videos;
+      setLoading(false);
     } catch (error) {
-      console.error("Error fetching videos:", error);
-      return [];
+      console.error("Error fetching videos  :", error);
+      setLoading(false);
     }
   };
 
   const fetchAndSetVideos = useCallback(async () => {
-    const data = await fetchVideos();
-    setVideos(data);
+    await fetchVideos();
   }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchAndSetVideos()
-      .then(() => setRefreshing(false))
-      .catch(() => setRefreshing(false));
+    fetchAndSetVideos().finally(() => setRefreshing(false));
   }, [fetchAndSetVideos]);
 
   useEffect(() => {
@@ -162,94 +161,105 @@ const Videos = (props) => {
   }, [fetchAndSetVideos]);
 
   const handlePlayVideo = (video) => {
+    console.log("Selected Video URL:", video.VideoURL);
     setSelectedVideo(video);
     setModalVisible(true);
-    setIsLoading(true);
+    setLoading(true);
   };
 
   const handlePlaybackStatusUpdate = (status) => {
-    if (status.isLoaded && !status.isPlaying) {
-      setIsPlaying(false);
-    } else if (status.isPlaying) {
-      setIsPlaying(true);
+    if (status.isLoaded) {
+      setLoading(false);
+      setIsPlaying(status.isPlaying);
     }
-    setIsLoading(false);
   };
 
   const handlePlayPause = () => {
-    if (playbackInstance) {
+    if (videoRef.current) {
       if (isPlaying) {
-        playbackInstance.pauseAsync();
+        videoRef.current.pauseAsync();
       } else {
-        playbackInstance.playAsync();
+        videoRef.current.playAsync();
       }
       setIsPlaying(!isPlaying);
     }
   };
 
   const handleRewind = () => {
-    if (playbackInstance) {
-      playbackInstance.setPositionAsync(0);
-      playbackInstance.playAsync();
+    if (videoRef.current) {
+      videoRef.current.setPositionAsync(0);
+      videoRef.current.playAsync();
       setIsPlaying(true);
     }
   };
 
   const handleFullscreenClose = () => {
     setModalVisible(false);
-    if (playbackInstance) {
-      playbackInstance.pauseAsync();
+    if (videoRef.current) {
+      videoRef.current.pauseAsync();
     }
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
-        {videos.length === 0 && <Text>No videos found</Text>}
-        {videos.map((video, index) => (
-          <TouchableOpacity key={index} onPress={() => handlePlayVideo(video)}>
-            <View style={styles.videoCard}>
-              <Image source={{ uri: video.thumbnail }} style={styles.videoThumbnail} />
-              <View style={styles.videoInfoContainer}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <View style={styles.categoryContainer}>
-                    <Ionicons name="albums" size={16} color="#D84374" />
-                    <Text style={styles.categoryText}>{video.category}</Text>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#D84374" />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.scrollViewContent}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
+          {videos.length === 0 && <Text>No videos found</Text>}
+          {videos.map((video, index) => (
+            <TouchableOpacity key={index} onPress={() => handlePlayVideo(video)}>
+              <View style={styles.videoCard}>
+                <Image source={{ uri: video.thumbnail }} style={styles.videoThumbnail} />
+                <View style={styles.videoInfoContainer}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={styles.categoryContainer}>
+                      <Ionicons name="albums" size={16} color="#D84374" />
+                      <Text style={styles.categoryText}>{video.VideoCat}</Text>
+                    </View>
+                    <Text style={styles.dateText}>{video.VideoDate}</Text>
                   </View>
-                  <Text style={styles.dateText}>{video.date}</Text>
+                  <Text style={styles.videoTitle}>{video.VideoTitle}</Text>
                 </View>
-                <Text style={styles.videoTitle}>{video.title}</Text>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={handleFullscreenClose}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <TouchableOpacity style={styles.closeButton} onPress={handleFullscreenClose}>
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
-            {isLoading && <ActivityIndicator size="large" color="#ffffff" style={styles.activityIndicator} />}
-            <SafeAreaView style={[styles.fullscreenVideo, { marginBottom: 5 }]}>
-              <Video
-                ref={(ref) => setPlaybackInstance(ref)}
-                source={{ uri: selectedVideo ? selectedVideo.videoUrl : null }}
-                style={{ flex: 1 }}
-                resizeMode="contain"
-                useNativeControls={false}
-                isLooping
-                shouldPlay
-                onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            {isLoading && (
+              <ActivityIndicator
+                size="large"
+                color="#ffffff"
+                style={styles.activityIndicator}
               />
+            )}
+            <SafeAreaView style={[styles.fullscreenVideo, { marginBottom: 5 }]}>
+              {selectedVideo && (
+                <Video
+                  ref={videoRef}
+                  source={{ uri: selectedVideo.VideoURL }}
+                  style={{ flex: 1 }}
+                  resizeMode="contain"
+                  useNativeControls={false}
+                  isLooping
+                  shouldPlay
+                  onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+                />
+              )}
             </SafeAreaView>
             <View style={styles.controlBar}>
               <TouchableOpacity style={styles.controlButton} onPress={handleRewind}>
@@ -267,3 +277,4 @@ const Videos = (props) => {
 };
 
 export default Videos;
+

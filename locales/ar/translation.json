@@ -12,13 +12,13 @@
   "page.noPostQuestions": "لم يتم العثور على أسئلة بعد",
   "tabLabels": {
     "Accueil": "الصفحة الرئيسية",
-    "Conseils": "نصائح",
+    "Conseils": "إقامتي",
     "Aide": "مساعدة",
     "Profil": "الملف الشخصي"
   },
   "sidebar": {
     "Chat direct": "محادثة",
-    "Conseils": "نصائح",
+    "Conseils": "إقامتي",
     "Listes de contrôle": "قوائم التحقق",
     "Paramètres": "الإعدادات",
     "Évaluez notre application": "قيم تطبيقنا",
@@ -57,8 +57,8 @@
     "confirmation": "تأكيد" ,
     "confirmationtext": "هل أنت متأكد أنك تريد تغيير اللغة؟",
     "cancel": "إلغاء" ,
-    "ok" : "نعم"
-
+    "ok" : "نعم" ,
+   "confirmUpdateTitle": "هل أنت متأكد أنك تريد تحديث هذه المعلومات؟"
   },
   "posts": {
     "searchPlaceholder": "البحث حسب الموضوع...",
@@ -100,6 +100,45 @@
     "9_CATEGORY": "صحة الوالدين",
     "10_CATEGORY": "نصائح التغذية",
   "See all": "اظهار الكل",
-  "GoBack": "العودة"
-  
+  "GoBack": "العودة" ,
+  "Document": {
+    "title": "الوثائق المطلوبة",
+    "pieceidentite": "بطاقة الهوية",
+    "priseEnCharge": "تغطية الضمان الاجتماعي و/أو التأمين الإضافي، بموجب اتفاقية محددة مسبقًا",
+    "bloodtype": "بطاقة فصيلة الدم"
+  } , 
+  "Valise": {
+    "title": "حقيبتك للإقامة",
+    "tenuesConfortables": "ملابس راحة للرضاعة",
+    "culottesJetables": "ملابس داخلية قابلة للتخلص",
+    "necessaireToilette": "ضروريات النظافة الشخصية",
+    "coussinetsSeins": "حشوات الثدي",
+    "garnituresJetables": "فوط الولادة القابلة للتخلص",
+    "soutienGorge": "حمالة الصدر للرضاعة",
+    "mules": "شباشب"
+  },
+  "ValiseBebe": {
+    "title": "لطفلك",
+    "tenuesBebe": "3 ملابس للطفل",
+    "couverture": "البطانية",
+    "gigoteuse": "حقيبة النوم",
+    "drapBain": "منشفة الحمام",
+    "peigneDents": "مشط الأسنان الدقيق",
+    "baseLavante": "غسل الطفل اللطيف",
+    "paquetCouches": "حزمة حفاضات",
+    "filetOmbilical": "شبكة الحبل السري",
+    "vetementsSortie": "ملابس للخروج ومقعد سيارة \"مواجهة الخلف\""
+  }, 
+  "Chat": {
+   "PersonneRepondre1":"لا يوجد أحد متصل ولكننا سوف نقوم بالرد عليك",
+   "PersonneRepondre2":"في أسرع وقت ممكن."
+  },
+  "InputChat": {
+    "placeholder": "اكتب هنا..."
+   } ,
+   "1_VIDEOTITLE": "الأدوية ما بعد الولادة للطفل",
+"2_VIDEOTITLE": "نصائح للآباء الجدد",
+"3_VIDEOTITLE": "إعداد سرير الرضيع الجديد"
+
+
 }

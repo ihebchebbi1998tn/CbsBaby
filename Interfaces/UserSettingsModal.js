@@ -1,21 +1,70 @@
-import React, { useState } from "react";
-import { Modal, TouchableOpacity, View, Text, TextInput, StyleSheet } from "react-native";
+import React, { useState, useContext } from "react";
+import { Modal, TouchableOpacity, View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import { useTranslation } from 'react-i18next';
+import { UserContext } from "./Backend/UserContext";
+import { BASE_URL } from "./Backend/apiConfig";
 
 const UserSettingsModal = ({ isVisible, onClose }) => {
-  const { t } = useTranslation(); // Access translation function
+  const { t } = useTranslation();
+  const { user } = useContext(UserContext);
 
-  const [nomMaman, setNomMaman] = useState(t('settings.name')); // Translate initial values
-  const [prenomMaman, setPrenomMaman] = useState(t('settings.firstName'));
-  const [dateNaissance, setDateNaissance] = useState(t('settings.dob'));
-  const [telMaman, setTelMaman] = useState(t('settings.phone'));
-  const [numDossier, setNumDossier] = useState(t('settings.fileNumber'));
-  const [passwordMaman, setPasswordMaman] = useState(t('settings.password')); 
+  // Initialize state with user's current information
+  const [nomMaman, setNomMaman] = useState(user.name);
+  const [prenomMaman, setPrenomMaman] = useState(user.surname);
+  const [dateNaissance, setDateNaissance] = useState(user.birthday);
+  const [telMaman, setTelMaman] = useState(user.phone_number);
+  const [numDossier, setNumDossier] = useState(user.IPP_Patient);
+  const [passwordMaman, setPasswordMaman] = useState(user.password_maman);
   const [userName, setUserName] = useState(t('settings.username'));
 
   const handleSaveSettings = () => {
-    onClose();
+    // Check if user has made any changes
+    if (
+      telMaman === user.phone_number &&
+      passwordMaman === user.password_maman
+    ) {
+      onClose();
+      return;
+    }
+
+    Alert.alert(
+      t('settings.confirmation'),
+      t('settings.confirmUpdateTitle'),
+      [
+        { text: t('settings.cancel'), style: 'cancel' },
+        {
+          text: t('settings.ok'),
+          onPress: () => {
+            const requestData = {
+              user_id: user.id,
+              tel_maman: telMaman,
+              password_maman: passwordMaman,
+            };
+
+            fetch(`${BASE_URL}/bebeapp/api/profile/update_user.php`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(requestData),
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                onClose(); 
+              } else {
+                alert(data.error); 
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -25,11 +74,12 @@ const UserSettingsModal = ({ isVisible, onClose }) => {
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <TouchableOpacity
-        style={styles.overlay}
-        onPress={onClose}
-      >
+      <View style={styles.overlay}>
         <View style={styles.modalContainer}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Ionicons name="close" size={24} color="#000" />
+          </TouchableOpacity>
+
           <Text style={styles.modalTitle}>{t('settings.user')}</Text>
 
           <View style={styles.inputContainer}>
@@ -49,7 +99,8 @@ const UserSettingsModal = ({ isVisible, onClose }) => {
               editable={false}
             />
           </View>
-          <View style={styles.inputContainer}>
+
+         {/*  <View style={styles.inputContainer}>
             <Ionicons name="person-circle" size={24} color="#D84374" />
             <TextInput
               style={styles.input}
@@ -58,6 +109,7 @@ const UserSettingsModal = ({ isVisible, onClose }) => {
               onChangeText={setUserName}
             />
           </View>
+ */}
           <View style={styles.inputContainer}>
             <Ionicons name="calendar" size={24} color="#D84374" />
             <TextInput
@@ -106,7 +158,7 @@ const UserSettingsModal = ({ isVisible, onClose }) => {
             <Text style={styles.saveButtonText}>{t('settings.save')}</Text>
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
     </Modal>
   );
 };
@@ -123,11 +175,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
-    alignItems: "center", 
+    alignItems: "center",
     backgroundColor: "rgba(255,255,255, 0.9)",
   },
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+  },
   modalTitle: {
-    fontSize: 24, 
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
   },
@@ -156,7 +213,7 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: "#fff",
-    fontSize: 16, 
+    fontSize: 16,
     fontWeight: "bold",
     marginLeft: 10,
   },

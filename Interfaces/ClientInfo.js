@@ -21,6 +21,19 @@ const ClientInfo = ({ receiverID }) => {
       });
   });
   
+ // Function to format language
+ const formatLanguage = (language) => {
+  switch (language) {
+    case "ar":
+      return "Arabe";
+    case "fr":
+      return "Français";
+    case "en":
+      return "Anglais";
+    default:
+      return language;
+  }
+};
 
   if (loading) {
     return (
@@ -43,10 +56,11 @@ const ClientInfo = ({ receiverID }) => {
       <View style={styles.profileContainer}>
         <Image source={ProfilePicture} style={styles.profilePicture} />
         <View style={styles.textContainer}>
-          <Text style={styles.nameText}>Nom : {clientData.name} {clientData.surname}</Text>
-          <Text style={styles.infoText}>Date de naissance : {clientData.birthday}</Text>
-          <Text style={styles.infoText}>Numéro de contact : {clientData.phone_number}</Text>
-          <Text style={styles.infoText}>Numéro de dossier : {clientData.file_number}</Text>
+          <Text style={styles.nameText}>Nom : {clientData.nom_maman} {clientData.prenom_maman}</Text>
+          <Text style={styles.infoText}>Date de naissance : {clientData.date_naissance}</Text>
+          <Text style={styles.infoText}>Numéro de contact : {clientData.tel_maman}</Text>
+          <Text style={styles.infoText}>Numéro de dossier : {clientData.IPP_Patient}</Text>
+          <Text style={styles.infoText}>Langue : {formatLanguage(clientData.langue)}</Text>
         </View>
       </View>
     </View>

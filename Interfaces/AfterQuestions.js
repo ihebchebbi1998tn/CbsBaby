@@ -1,56 +1,62 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DirectContact from "./DirectContact";
 import { BASE_URL } from "./Backend/apiConfig";
+import { UserContext } from "./Backend/UserContext";
 
 const AfterQuestions = ({ route }) => {
   const navigation = useNavigation();
   const [postQuestions, setPostQuestions] = useState([]);
+  const [loading, setLoading] = useState(true); // State to manage loading indicator
   const { question_id } = route.params;
-  const { question_text} = route.params;
-
+  const { question_text } = route.params;
+  const { translated_question_text } = route.params;
+  const { user } = useContext(UserContext);
+  const userlanguage = user.language;
   useEffect(() => {
     fetchPostQuestions();
   }, [question_id]);
 
   const fetchPostQuestions = () => {
-    fetch(`${BASE_URL}bebeapp/api/Messaging/Questions/get_questions_answers.php?question_id=${question_id}`)
+    fetch(`${BASE_URL}bebeapp/api/Messaging/Questions/get_questions_answers.php?question_id=${question_id}&output_language=${userlanguage}`)
       .then(response => response.json())
       .then(data => {
         setPostQuestions(data);
-        console.log(data);
+        setLoading(false); // Set loading to false when data is fetched
       })
       .catch(error => {
-        console.error("Error fetching post questions:", error);
         setPostQuestions([]);
+        setLoading(false); // Set loading to false in case of error
       });
   };
-
 
   const renderPostQuestionItem = ({ item }) => (
     <TouchableOpacity
       style={styles.questionButton}
-      onPress={() => handleCardPress(item)}
     >
-      <Text style={styles.questionText}>{item.answer_text}</Text>
+      <Text style={styles.questionText}>{item.translated_answer_text}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>{question_text}</Text>
+        <Text style={styles.headerText}>{translated_question_text}</Text>
       </View>
-      <FlatList
-        data={postQuestions}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderPostQuestionItem}
-        ListEmptyComponent={() => (
-          <Text style={styles.emptyText}>No post questions found</Text>
-        )}
-        contentContainerStyle={styles.questionList}
-      />
+      {loading ? ( // Show activity indicator while loading
+        <ActivityIndicator size="large" color="#D84374" />
+      ) : (
+        <FlatList
+          data={postQuestions}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderPostQuestionItem}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyText}>No post questions found</Text>
+          )}
+          contentContainerStyle={styles.questionList}
+        />
+      )}
       <DirectContact />
     </View>
   );

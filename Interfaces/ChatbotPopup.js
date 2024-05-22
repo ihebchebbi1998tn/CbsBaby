@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, StyleSheet, Image, Text, Animated } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Text, Animated, PanResponder, Dimensions } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from 'react-i18next';
+
+const { width } = Dimensions.get('window');
 
 const ChatbotPopup = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [isConnected, setIsConnected] = useState(true); // Assuming connected initially
-  const [animateText] = useState(new Animated.Value(0));
+  const animateText = useState(new Animated.Value(0))[0];
+
   const navigation = useNavigation();
   const { t } = useTranslation();
+
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderRelease: (e, gestureState) => {
+        if (Math.abs(gestureState.dx) > width * 0.4) {
+          closePopup();
+        }
+      },
+    })
+  );
 
   useEffect(() => {
     // Animate text
@@ -17,22 +31,30 @@ const ChatbotPopup = () => {
       duration: 500,
       useNativeDriver: true,
     }).start();
+    
+    // Set timeout to hide the popup after 8 seconds
+    const popupTimeout = setTimeout(() => {
+      setIsVisible(false);
+    }, 12000);
+
+    return () => clearTimeout(popupTimeout); // Clean up the setTimeout
   }, []);
 
   const closePopup = () => {
-    navigation.navigate("InterfaceCommunication5");
+    setIsVisible(false);
+    // Additional animations or cleanup here after closing
   };
 
   return (
     <>
       {isVisible && (
-        <TouchableOpacity style={styles.popupButton} onPress={closePopup}>
+        <Animated.View style={styles.popupButton} {...panResponder.current.panHandlers}>
           <View style={[styles.statusIndicator, { backgroundColor: isConnected ? 'rgba(76, 175, 80, 0.8)' : 'rgba(204, 204, 204, 0.8)' }]} />
           <Animated.View style={[styles.messageBox, { opacity: animateText }]}>
             <Text style={styles.messageText}>{t('chatbotPopup.Need help?')}</Text>
           </Animated.View>
           <Image source={require('../assets/Images/nurseimage.jpg')} style={[styles.circularImage, { opacity: 0.8 }]} />
-        </TouchableOpacity>
+        </Animated.View>
       )}
     </>
   );

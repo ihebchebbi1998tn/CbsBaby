@@ -1,0 +1,87 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Users\ihebc\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@10.6.0
+2 info using node@v20.12.2
+3 silly config:load:file:C:\Users\ihebc\AppData\Roaming\npm\node_modules\npm\npmrc
+4 silly config:load:file:C:\CBS\ConnectCBS\.npmrc
+5 silly config:load:file:C:\Users\ihebc\.npmrc
+6 silly config:load:file:C:\Users\ihebc\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm dedupe
+8 verbose argv "dedupe"
+9 verbose logfile logs-max:10 dir:C:\CBS\ConnectCBS\clean\_logs\2024-05-20T11_44_31_072Z-
+10 verbose logfile C:\CBS\ConnectCBS\clean\_logs\2024-05-20T11_44_31_072Z-debug-0.log
+11 silly logfile start cleaning logs, removing 2 files
+12 silly logfile done cleaning log files
+13 silly idealTree buildDeps
+14 silly fetch manifest ramda@^0.29.1
+15 http fetch GET 200 https://registry.npmjs.org/ramda 1512ms (cache miss)
+16 silly placeDep ROOT ramda@0.29.1 KEEP for: bebecbs@1.0.0 want: ^0.29.1
+17 silly fetch manifest @babel/code-frame@^7.24.2
+18 http fetch GET 200 https://registry.npmjs.org/@babel%2fcode-frame 58ms (cache miss)
+19 silly fetch manifest debug@^4.1.0
+20 http fetch GET 200 https://registry.npmjs.org/debug 55ms (cache miss)
+21 silly fetch manifest semver@^6.3.1
+22 http fetch GET 200 https://registry.npmjs.org/semver 80ms (cache miss)
+23 silly placeDep ROOT @babel/code-frame@7.24.2 KEEP for: @babel/core@7.24.3 want: ^7.24.2
+24 silly placeDep ROOT debug@4.3.4 KEEP for: @babel/core@7.24.3 want: ^4.1.0
+25 silly placeDep ROOT semver@6.3.1 KEEP for: @babel/core@7.24.3 want: ^6.3.1
+26 silly fetch manifest jsesc@^2.5.1
+27 http fetch GET 200 https://registry.npmjs.org/jsesc 40ms (cache miss)
+28 silly placeDep ROOT jsesc@2.5.2 KEEP for: @babel/generator@7.24.1 want: ^2.5.1
+29 silly fetch manifest lru-cache@^5.1.1
+30 http fetch GET 200 https://registry.npmjs.org/lru-cache 65ms (cache revalidated)
+31 silly placeDep ROOT lru-cache@5.1.1 KEEP for: @babel/helper-compilation-targets@7.23.6 want: ^5.1.1
+32 silly placeDep ROOT semver@6.3.1 KEEP for: @babel/helper-compilation-targets@7.23.6 want: ^6.3.1
+33 silly placeDep ROOT semver@6.3.1 KEEP for: @babel/helper-create-class-features-plugin@7.24.4 want: ^6.3.1
+34 silly placeDep ROOT semver@6.3.1 KEEP for: @babel/helper-create-regexp-features-plugin@7.22.15 want: ^6.3.1
+35 silly fetch manifest debug@^4.1.1
+36 silly fetch manifest resolve@^1.14.2
+37 http fetch GET 200 https://registry.npmjs.org/resolve 54ms (cache miss)
+38 silly placeDep ROOT debug@4.3.4 KEEP for: @babel/helper-define-polyfill-provider@0.6.1 want: ^4.1.1
+39 silly placeDep ROOT resolve@1.22.8 KEEP for: @babel/helper-define-polyfill-provider@0.6.1 want: ^1.14.2
+40 silly fetch manifest chalk@^2.4.2
+41 http fetch GET 200 https://registry.npmjs.org/chalk 38ms (cache miss)
+42 silly placeDep ROOT chalk@2.4.2 KEEP for: @babel/highlight@7.24.2 want: ^2.4.2
+43 silly placeDep ROOT semver@6.3.1 KEEP for: @babel/plugin-transform-runtime@7.24.3 want: ^6.3.1
+44 silly placeDep ROOT semver@6.3.1 KEEP for: @babel/preset-env@7.24.4 want: ^6.3.1
+45 silly fetch manifest regenerator-runtime@^0.14.0
+46 http fetch GET 200 https://registry.npmjs.org/regenerator-runtime 85ms (cache revalidated)
+47 silly placeDep ROOT regenerator-runtime@0.14.1 KEEP for: @babel/runtime@7.24.1 want: ^0.14.0
+48 silly fetch manifest @babel/code-frame@^7.23.5
+49 silly placeDep ROOT @babel/code-frame@7.24.2 KEEP for: @babel/template@7.24.0 want: ^7.23.5
+50 silly fetch manifest @babel/code-frame@^7.24.1
+51 silly fetch manifest debug@^4.3.1
+52 silly placeDep ROOT @babel/code-frame@7.24.2 KEEP for: @babel/traverse@7.24.1 want: ^7.24.1
+53 silly placeDep ROOT debug@4.3.4 KEEP for: @babel/traverse@7.24.1 want: ^4.3.1
+54 silly fetch manifest deepmerge@^3.2.0
+55 http fetch GET 200 https://registry.npmjs.org/deepmerge 41ms (cache miss)
+56 silly placeDep node_modules/@callstack/react-theme-provider deepmerge@3.3.0 KEEP for: @callstack/react-theme-provider@3.0.9 want: ^3.2.0
+57 silly fetch manifest uuid@^8.0.0
+58 http fetch GET 200 https://registry.npmjs.org/uuid 45ms (cache miss)
+59 silly placeDep ROOT uuid@8.3.2 KEEP for: @expo/bunyan@4.0.0 want: ^8.0.0
+60 silly fetch manifest @expo/spawn-async@1.5.0
+61 http fetch GET 200 https://registry.npmjs.org/@expo%2fspawn-async 209ms (cache miss)
+62 silly fetch manifest bplist-parser@^0.3.1
+63 http fetch GET 200 https://registry.npmjs.org/bplist-parser 35ms (cache miss)
+64 silly fetch manifest chalk@^4.0.0
+65 silly fetch manifest ci-info@^3.3.0
+66 http fetch GET 200 https://registry.npmjs.org/ci-info 36ms (cache miss)
+67 silly fetch manifest debug@^4.3.4
+68 silly fetch manifest fs-extra@~8.1.0
+69 http fetch GET 200 https://registry.npmjs.org/fs-extra 43ms (cache miss)
+70 silly fetch manifest glob@^7.1.7
+71 http fetch GET 200 https://registry.npmjs.org/glob 58ms (cache updated)
+72 silly fetch manifest is-wsl@^2.1.1
+73 http fetch GET 200 https://registry.npmjs.org/is-wsl 64ms (cache miss)
+74 silly fetch manifest js-yaml@^3.13.1
+75 http fetch GET 200 https://registry.npmjs.org/js-yaml 39ms (cache miss)
+76 silly fetch manifest minimatch@^3.0.4
+77 http fetch GET 200 https://registry.npmjs.org/minimatch 66ms (cache revalidated)
+78 silly fetch manifest minipass@3.3.6
+79 http fetch GET 200 https://registry.npmjs.org/minipass 53ms (cache updated)
+80 silly fetch manifest node-fetch@^2.6.7
+81 http fetch GET 200 https://registry.npmjs.org/node-fetch 60ms (cache miss)
+82 silly fetch manifest open@^8.3.0
+83 http fetch GET 200 https://registry.npmjs.org/open 38ms (cache miss)
+84 silly fetch manifest ora@3.4.0
+85 http fetch GET 200 https://registry.npmjs.org/ora 40ms (cache miss)
+86 silly fetch manifest picomatch@^3.0.1

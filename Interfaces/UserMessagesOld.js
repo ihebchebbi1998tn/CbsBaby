@@ -19,6 +19,9 @@ import NurseInfoBar from "./NurseInfoBar";
 import CustomHeader from "./CustomHeader";
 import BottomNavbar from "./BottomNavbar";
 import { StatusBar } from "expo-status-bar";
+import { useEnableTranslation } from './Backend/TranslationContext';
+
+
 const UserMessagesOld = () => {
   const [messages, setMessages] = useState([]);
   const { user } = useContext(UserContext);
@@ -26,17 +29,20 @@ const UserMessagesOld = () => {
   const SENDER_ID = user ? user.id : "";
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const { sessionId, sendby} = route.params;
+  const { enableTranslationsChat } = useEnableTranslation();
+
 
   useEffect(() => {
-    const interval = setInterval(fetchMessages, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 1200); 
+    return () => clearInterval(interval); 
+  }, [enableTranslationsChat]);
 
   const fetchMessages = async () => {
     try {
       let url;
 
-      url = `${BASE_URL}bebeapp/api/Messaging/get_messages.php?sender_id=${SENDER_ID}&session_id=${sessionId}`;
+      url = `${BASE_URL}bebeapp/api/Messaging/get_messages.php?sender_id=${SENDER_ID}&session_id=${sessionId}&output_language=${user.language}&translations=${enableTranslationsChat}`;
 
       const response = await fetch(url);
       const data = await response.json();
@@ -60,27 +66,6 @@ const UserMessagesOld = () => {
     }
   };
   
-  
-/*   useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      setShowModal(true);
-      return true;
-    });
-
-    return () => backHandler.remove();
-  }, []);
-
-   // Function to close the modal
-   const closeModal = () => {
-    setShowModal(false);
-  };
-
-  // Function to handle leaving the page
-  const handleLeavePage = () => {
-    closeModal();
-    // Perform action when leaving the page, such as navigation
-    // navigation.goBack(); // Example of going back
-  }; */
 
   const renderMessageItem = ({ item }) => {
     const messageDate = new Date(item.message_time);
@@ -158,27 +143,6 @@ const UserMessagesOld = () => {
         inverted={true}
       />
       <InputMessage sessionId={sessionId} recieverID="123456789" from="user" />
-        {/* Modal for confirmation */}
-      {/*   <Modal
-        animationType="fade"
-        transparent={true}
-        visible={showModal}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Are you sure you want to leave?</Text>
-            <View style={styles.buttonContainer}>
-              <Pressable style={[styles.button, styles.cancelButton]} onPress={closeModal}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </Pressable>
-              <Pressable style={[styles.button, styles.confirmButton]} onPress={handleLeavePage}>
-                <Text style={styles.buttonText}>Confirm</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
            <BottomNavbar />
 
     </SafeAreaView>

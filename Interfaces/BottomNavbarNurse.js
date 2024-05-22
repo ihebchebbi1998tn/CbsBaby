@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   indicator: {
     height: 2,
     backgroundColor: "#FFF", // White Indicator Color
-    marginTop: 4,
+    marginTop: 2,
     width: "90%", // Adjust as needed
   },
 });

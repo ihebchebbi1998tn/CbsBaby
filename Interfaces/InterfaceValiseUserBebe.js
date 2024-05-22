@@ -1,27 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useContext} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList, SafeAreaView, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import CustomHeader from './CustomHeader';
 import BottomNavbar from './BottomNavbar';
 import { BASE_URL } from './Backend/apiConfig';
-
+import { useTranslation } from 'react-i18next';
+import { UserContext } from "./Backend/UserContext";
 const InterfaceValiseUserBebe = () => {
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation(); // Access translation function
+  const { user } = useContext(UserContext);
 
   const documents = [
-    { name:  '3 tenues pour bébé', icon: 'layers' },
-    { name:     'Couverture',    icon: 'layers' },
-    { name: 'Gigoteuse', icon: 'layers' },
-    { name: 'Drap de bain', icon: 'layers' },
-    { name: 'Peigne à dents serrés', icon: 'layers' },
-    { name: 'Base lavante douce pour bébé', icon: 'layers' },
-    { name: 'Paquet de couches',    icon: 'layers'},
-    { name: 'Filet ombilical',    icon: 'layers' },
-    { name: 'Vêtements pour la sortie et siège auto "dos à la route',    icon: 'layers' },
-
-
-  ];
+    { name: '3 tenues pour bébé', translatedName: t('ValiseBebe.tenuesBebe'), icon: 'layers' },
+    { name: 'Couverture', translatedName: t('ValiseBebe.couverture'), icon: 'layers' },
+    { name: 'Gigoteuse', translatedName: t('ValiseBebe.gigoteuse'), icon: 'layers' },
+    { name: 'Drap de bain', translatedName: t('ValiseBebe.drapBain'), icon: 'layers' },
+    { name: 'Peigne à dents serrés', translatedName: t('ValiseBebe.peigneDents'), icon: 'layers' },
+    { name: 'Base lavante douce pour bébé', translatedName: t('ValiseBebe.baseLavante'), icon: 'layers' },
+    { name: 'Paquet de couches', translatedName: t('ValiseBebe.paquetCouches'), icon: 'layers' },
+    { name: 'Filet ombilical', translatedName: t('ValiseBebe.filetOmbilical'), icon: 'layers' },
+    { name: 'Vêtements pour la sortie et siège auto "dos à la route"', translatedName: t('ValiseBebe.vetementsSortie'), icon: 'layers' },
+];
 
   const [completedDocuments, setCompletedDocuments] = useState([]);
   const progressPercentage = Math.round((completedDocuments.length / documents.length) * 100);
@@ -44,7 +45,7 @@ const InterfaceValiseUserBebe = () => {
 
   const updateDocumentStatus = async (documentName, status) => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/todolist_add.php?categorytodo=Les%20documents%20%C3%A0%20apporter&name_todo=${encodeURIComponent(documentName)}&status=${status}&user=1`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/todolist_add.php?categorytodo=Les%20documents%20%C3%A0%20apporter&name_todo=${encodeURIComponent(documentName)}&status=${status}&user=${user.id}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -70,7 +71,7 @@ const InterfaceValiseUserBebe = () => {
 
   const checkTaskStatus = async (taskName) => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/get_lists_todo.php?user=1&task_name=${encodeURIComponent(taskName)}`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/get_lists_todo.php?user=${user.id}&task_name=${encodeURIComponent(taskName)}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -89,7 +90,7 @@ const InterfaceValiseUserBebe = () => {
       onPress={() => handleDocumentClick(item.name)}
     >
       <Icon name={item.icon} size={24} color="#d94274" style={styles.icon} />
-      <Text style={[styles.documentText, { color: completedDocuments.includes(item.name) ? '#616161' : '#333333' }]}>{item.name}</Text>
+      <Text style={[styles.documentText, { color: completedDocuments.includes(item.name) ? '#616161' : '#333333' }]}>{item.translatedName}</Text>
       {completedDocuments.includes(item.name) && (
         <View style={styles.completedOverlay}>
           <Text style={styles.completedText}>Complété ✔</Text>
@@ -111,7 +112,7 @@ const InterfaceValiseUserBebe = () => {
         </TouchableOpacity>
         <View style={styles.container}>
           <Text style={styles.heading}>
-          La valise du bébé
+          {t('ValiseBebe.title')}
            </Text>
           <View style={styles.progressContainer}>
             <View style={styles.progressBarContainer}>

@@ -5,7 +5,6 @@ const Sidebar = ({ isOpen, onClose }) => {
   return (
     <View style={styles.container}>
       <View style={[styles.sidebar, isOpen ? styles.sidebarOpen : styles.sidebarClosed]}>
-        {/* Add your sidebar content here */}
         <Text>Sidebar Content</Text>
         <TouchableOpacity onPress={onClose}>
           <Text>Close</Text>

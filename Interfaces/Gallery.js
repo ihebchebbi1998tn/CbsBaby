@@ -13,23 +13,38 @@ const Gallery = () => {
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        if (user && user.id) {
-            // Fetch user images when the component mounts
-            fetch(`${BASE_URL}bebeapp/api/Profile/get_post.php?userID=${user.id}`)
-                .then((response) => response.json())
-                .then((data) => setPhotos(data))
-                .catch((error) => console.error("Error fetching images:", error));
-        }
+        const fetchPhotos = () => {
+            if (user && user.id) {
+                fetch(`${BASE_URL}bebeapp/api/Profile/get_post.php?userID=${user.id}`)
+                    .then((response) => response.text())
+                    .then((text) => {
+                        try {
+                            const data = JSON.parse(text);
+                            setPhotos(data);
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
+                            console.log("Response text:", text);
+                        }
+                    })
+                    .catch((error) => console.error("Error fetching images:", error));
+            }
+        };
+    
+        fetchPhotos();
+    
+        const intervalId = setInterval(fetchPhotos, 10000);
+        return () => {
+            clearInterval(intervalId);
+        };
     }, [user]);
-
+    
     const handlePhotoPress = (photo) => {
         setSelectedPhoto(photo);
         setModalVisible(true);
     };
 
     const renderItem = ({ item }) => {
-        // Extracting date part from the DateTime string
-        const dateTaken = item.DateTaken.split(" ")[0]; // Assuming DateTaken is in the format "YYYY-MM-DD HH:MM:SS"
+        const dateTaken = item.DateTaken.split(" ")[0]; 
         
         return (
           <TouchableOpacity onPress={() => handlePhotoPress(item)}>

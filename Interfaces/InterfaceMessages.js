@@ -19,7 +19,7 @@ import NurseInfoBar from "./NurseInfoBar";
 import { UserContext } from "./Backend/UserContext";
 import { StatusBar } from "expo-status-bar";
 import HeaderNavbar from "./HeaderNavbar";
-
+import { Icon } from "react-native-paper";
 const NoMessagesFound = () => {
   return (
     <View style={styles.noMessagesContainer}>
@@ -30,7 +30,6 @@ const NoMessagesFound = () => {
   );
 };
 
-// Main component for the chat list page
 const ChatListPage = () => {
   const [userList, setUserList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,7 +40,7 @@ const ChatListPage = () => {
   const nurseid = user.id ;
   const fetchUserData = useCallback(async () => {
     try {
-      const response = await fetch(`${BASE_URL}/bebeapp/api/Messaging/get_sessions_messages_nurse.php`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/Messaging/get_sessions_messages_nurse.php`);
       if (!response.ok) {
         console.error("Erreur lors de la récupération des données utilisateur :", response.statusText);
         return;
@@ -84,11 +83,9 @@ const ChatListPage = () => {
       if (!response.ok) {
         throw new Error("Failed to update user2 field");
       }
-      // If user2 updated successfully, navigate to UserMessagesNurse screen
       navigation.navigate('UserMessagesNurse', { sessionId, sendby, nurseid, sendto, from: "nurse" ,token_key});
     } catch (error) {
       console.error("Error updating user2:", error.message);
-      // Handle error condition here, if needed
     }
   };
 
@@ -98,7 +95,6 @@ const ChatListPage = () => {
     };
   
 const getTimeDifference = (messageTime, messageStatus) => {
-  // If message status is "read", always return green color
   if (messageStatus === "read") {
     return "#006400"; // Dark green color
   }
@@ -109,7 +105,6 @@ const getTimeDifference = (messageTime, messageStatus) => {
   const timeDifference = Math.abs(currentTime - adjustedTime);
   const minutesDifference = Math.floor(timeDifference / (1000 * 60));
 
-  // Check if the time difference is greater than 60 minutes
   if (minutesDifference >= 60) {
     const hoursDifference = Math.floor(minutesDifference / 60);
     return `il y a ${hoursDifference} heures`; // Translated to French
@@ -125,7 +120,6 @@ const getTimeDifference = (messageTime, messageStatus) => {
       return "#006400"; // Dark green color
     }
   
-    // Calculate time difference for other cases
     const adjustedTime = new Date(messageTime);
     adjustedTime.setHours(adjustedTime.getHours() + 1);
     const currentTime = new Date();
@@ -156,6 +150,7 @@ const getTimeDifference = (messageTime, messageStatus) => {
       <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'always' }}>
         <HeaderNavbar />
         <View style={styles.contentContainer}>
+
           <View style={styles.searchContainer}>
             <Ionicons name="search" size={24} color="#888" style={styles.searchIcon} />
             <TextInput
@@ -297,6 +292,7 @@ const getTimeDifference = (messageTime, messageStatus) => {
     finishedIcon: {
       marginLeft: "auto",
     },
+    
   });
   
   export default ChatListPage;

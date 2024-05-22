@@ -11,10 +11,6 @@ import {
 } from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useNavigation } from "@react-navigation/native";
-import CustomHeader from "./CustomHeader";
-import BottomNavbar from "./BottomNavbar";
-import ChatbotPopup from "./ChatbotPopup";
-import { StatusBar } from "expo-status-bar";
 import { useTranslation } from "react-i18next";
 
 
@@ -23,10 +19,7 @@ const InterfaceListeControle = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const carouselRef = useRef(null);
   const { t, i18n } = useTranslation();
-  const adviceImages = [
-    require("../assets/Images/baby_image.png"),
-    require("../assets/Images/conseilmom.png"),
-  ];
+
 
   const isArabic = i18n.language === "ar";
 

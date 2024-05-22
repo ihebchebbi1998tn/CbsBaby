@@ -1,15 +1,9 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  Text,
-  FlatList,
   SafeAreaView
 } from "react-native";
-import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useNavigation } from "@react-navigation/native";
 import CustomHeader from "./CustomHeader";
 import BottomNavbar from "./BottomNavbar";
@@ -21,131 +15,18 @@ import InterfaceListeControle from "./InterfaceListeControle";
 const InterfaceConseilClient = () => {
   const navigation = useNavigation();
   const { t, i18n } = useTranslation();
-  const [activeSlide, setActiveSlide] = useState(0);
-  const carouselRef = useRef(null);
-
-  const adviceImages = [
-    require("../assets/Images/baby_image.png"),
-    require("../assets/Images/conseilmom.png"),
-  ];
-
-  const isArabic = i18n.language === "ar";
-
-  const handleFirstCarouselPress = () => {
-    console.log("First carousel pressed");
-  };
-
-  const handleSecondCarouselPress = () => {
-    console.log("Second carousel pressed");
-  };
-
-  const checklistItems = [
-    {
-      title: t("Les documents à apporter"),
-      description: t("Assurez-vous d'avoir tous les documents nécessaires."),
-      image: require("../assets/Images/documents.png"),
-    },
-    {
-      title: t("Votre valise pour le séjour"),
-      description: t("Préparez-vous avec des vêtements et vos essentiels."),
-      image: require("../assets/Images/valise.png"),
-    },
-    {
-      title: t("Pour votre bébé"),
-      description: t("Préparez tous les essentiels de votre bébé."),
-      image: require("../assets/Images/pourbebe.png"),
-    },
-  ];
-
-  const handleChecklistItemPress = (index) => {
-    switch (index) {
-      case 0:
-        navigation.navigate("InterfaceDocumentUser");
-        break;
-      case 1:
-        navigation.navigate("InterfaceValiseUser");
-        break;
-      case 2:
-        navigation.navigate("InterfaceValiseUserBebe");
-        break;
-      default:
-        break;
-    }
-  };
-
-  const renderChecklistItem = ({ item, index }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => handleChecklistItemPress(index)}
-    >
-      <View style={styles.imageContainer}>
-        <Image source={item.image} style={styles.image} resizeMode="contain" />
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={[styles.title, isArabic && styles.arabicText]}>
-          {item.title}
-        </Text>
-        <Text style={[styles.description ,isArabic && styles.arabicText]}>{item.description}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderCarouselItem = ({ item, index }) => (
-    <View style={styles.carouselContainer}>
-      <Image source={item} style={styles.carouselImage} resizeMode="cover" />
-      {index === 0 && (
-        <>
-          <TouchableOpacity
-            style={[styles.touchableArea, styles.eyesArea]}
-            onPress={handleFirstCarouselPress}
-          >
-            
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.touchableArea, styles.noseArea]}
-            onPress={handleSecondCarouselPress}
-          >
-           
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.touchableArea, styles.sieges]}
-            onPress={handleSecondCarouselPress}
-          >
-            
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.touchableArea, styles.Cordon]}
-            onPress={handleSecondCarouselPress}
-          >
-            
-          </TouchableOpacity>
-        </>
-      )}
-      <View style={styles.paginationCircles}>
-        {adviceImages.map((_, i) => (
-          <View
-            key={i}
-            style={[
-              styles.paginationCircle,
-              { opacity: i === index ? 1 : 0.5 },
-            ]}
-          />
-        ))}
-      </View>
-    </View>
-  );
 
   return (
     <>
-    <StatusBar backgroundColor="#D84374" barStyle="light-content" />
-    <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'always' }}>
-    <View style={styles.container}>
-      <CustomHeader />
-     <InterfaceListeControle />
-      <ChatbotPopup />
-      <BottomNavbar />
-    </View>
-    </SafeAreaView>
+      <StatusBar backgroundColor="#D84374" barStyle="light-content" />
+      <SafeAreaView style={{ flex: 1 }} forceInset={{ top: 'always' }}>
+        <View style={styles.container}>
+          <CustomHeader />
+          <InterfaceListeControle />
+          <ChatbotPopup />
+          <BottomNavbar />
+        </View>
+      </SafeAreaView>
     </>
   );
 };

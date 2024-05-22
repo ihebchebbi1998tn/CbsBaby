@@ -26,14 +26,16 @@ const InterfaceHomeNurse = () => {
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
-    const fetchNurseStatusInterval = setInterval(fetchNurseStatus, 3000);
-    const fetchUnreadMessagesInterval = setInterval(fetchUnreadMessages, 2000);
+    if (user) {
+      const fetchNurseStatusInterval = setInterval(fetchNurseStatus, 3000);
+      const fetchUnreadMessagesInterval = setInterval(fetchUnreadMessages, 2000);
 
-    return () => {
-      clearInterval(fetchNurseStatusInterval);
-      clearInterval(fetchUnreadMessagesInterval);
-    };
-  }, []);
+      return () => {
+        clearInterval(fetchNurseStatusInterval);
+        clearInterval(fetchUnreadMessagesInterval);
+      };
+    }
+  }, [user]);
 
   const fetchNurseStatus = async () => {
     try {
@@ -45,34 +47,28 @@ const InterfaceHomeNurse = () => {
         setIsActive(data.isActive);
       } else {
         setIsActive(false);
-        Alert.alert("Error", data.message);
+        Alert.alert("Erreur", data.message);
       }
     } catch (error) {
       setIsActive(false);
-      console.error("Error fetching nurse status:", error);
-      Alert.alert(
-        "Error",
-        "Failed to fetch nurse status. Please try again later."
-      );
+      console.error("Erreur lors de la récupération du statut de l'infirmière :", error);
+      Alert.alert("Erreur", "Échec de la récupération du statut de l'infirmière. Veuillez réessayer plus tard.");
     }
   };
 
   const fetchUnreadMessages = async () => {
     try {
       const response = await fetch(
-        `${BASE_URL}/bebeapp/api/Messaging/not_read_message_user.php?user_id=123456789`
+        `${BASE_URL}bebeapp/api/Messaging/not_read_message_user.php?user_id=${user.id}`
       );
       const data = await response.json();
       if (data.status === "success") {
         setUnreadMessages(data.session_count);
       } else {
-        console.error(
-          "Failed to fetch number of unread messages:",
-          data.message
-        );
+        console.error("Échec de la récupération du nombre de messages non lus :", data.message);
       }
     } catch (error) {
-      console.error("Error fetching number of unread messages:", error);
+      console.error("Erreur lors de la récupération du nombre de messages non lus :", error);
     }
   };
 
@@ -83,7 +79,7 @@ const InterfaceHomeNurse = () => {
   const handleMessagesPress = () => {
     if (isActive) {
       navigation.navigate("InterfaceMessages");
-      setUnreadMessages(0); // Reset unread messages to 0 when navigating to messages
+      setUnreadMessages(0); // Réinitialise les messages non lus à 0 lors de la navigation vers les messages
     } else {
       Alert.alert(
         "Inactif",
@@ -151,13 +147,14 @@ const InterfaceHomeNurse = () => {
               <Ionicons name="rose-outline" style={styles.buttonIcon} />
               <Text style={styles.buttonText}>Mamans</Text>
             </TouchableOpacity>
+            {/* Décommenter si nécessaire
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => navigation.navigate("EquipeCbs")}
             >
               <Ionicons name="people-circle-outline" style={styles.buttonIcon} />
               <Text style={styles.buttonText}>CBSbébé</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </ScrollView>
         <BottomNavbarNurse />
@@ -202,7 +199,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
     marginBottom: 10,
-    position: "relative", // Added position relative for badge positioning
+    position: "relative", // Position relative ajoutée pour le positionnement du badge
   },
   disabledButton: {
     backgroundColor: "#cccccc",
@@ -225,11 +222,11 @@ const styles = StyleSheet.create({
   badge: {
     backgroundColor: "#ff0000",
     borderRadius: 50,
-    paddingHorizontal: 8, // Adjust padding
-    paddingVertical: 4, // Adjust padding
-    minWidth: 20, // Ensure a minimum width
-    alignItems: "center", // Center badge content horizontally
-    justifyContent: "center", // Center badge content vertically
+    paddingHorizontal: 8, // Ajuster le padding
+    paddingVertical: 4, // Ajuster le padding
+    minWidth: 20, // Assurer une largeur minimale
+    alignItems: "center", // Centrer le contenu du badge horizontalement
+    justifyContent: "center", // Centrer le contenu du badge verticalement
   },
   badgeText: {
     color: "#ffffff",

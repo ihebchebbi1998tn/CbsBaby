@@ -19,6 +19,7 @@ import HeaderNavbar from "./HeaderNavbar";
 import CustomHeader from "./CustomHeader";
 import CustomHeaderChatNurse from "./CustomHeaderChatNurse";
 import ClientInfo from "./ClientInfo";
+import { useEnableTranslation } from './Backend/TranslationContext';
 
 const UserMessagesNurse = ( ) => {
   const [messages, setMessages] = useState([]);
@@ -26,16 +27,18 @@ const UserMessagesNurse = ( ) => {
   const route = useRoute();
   const SENDER_ID = "123456789";
   const { sessionId, sendby, nurseid, sendto , token_key } = route.params;
+  const { enableTranslationsChat } = useEnableTranslation();
 
   useEffect(() => {
-    const interval = setInterval(fetchMessages, 500);
-    return () => clearInterval(interval);
-  }, []);
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 1200); 
+    return () => clearInterval(interval); 
+  }, [enableTranslationsChat]);
 
   const fetchMessages = async () => {
     try {
       let url;
-      url = `${BASE_URL}bebeapp/api/Messaging/get_messages.php?sender_id=${SENDER_ID}&session_id=${sessionId}`;
+      url = `${BASE_URL}bebeapp/api/Messaging/get_messages.php?sender_id=${SENDER_ID}&session_id=${sessionId}&output_language=ar&translations=${enableTranslationsChat}`;
     
       const response = await fetch(url);
       if (!response.ok) {

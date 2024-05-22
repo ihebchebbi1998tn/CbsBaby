@@ -12,13 +12,13 @@
   "page.noPostQuestions": "Aucune question postale trouvée",
   "tabLabels": {
     "Accueil": "Accueil",
-    "Conseils": "Conseils",
+    "Conseils": "Admission",
     "Aide": "Aide",
     "Profil": "Profil"
   },
   "sidebar": {
     "Chat direct": "Chat direct",
-    "Conseils": "Conseils",
+    "Conseils": "Admission",
     "Listes de contrôle": "Listes de contrôle",
     "Paramètres": "Paramètres",
     "Évaluez notre application": "Évaluez notre application",
@@ -66,7 +66,9 @@
     "disconnect": "Déconnexion" ,
     "confirmation": "confirmation"  ,
     "confirmationtext": "Êtes-vous sûr de vouloir changer la langue ?",
-    "ok" : "oui"
+    "ok" : "oui" ,
+    "settings.confirmUpdateTitle": "Êtes-vous sûr de vouloir mettre à jour ces informations ?"
+
   },
   "Astuces pour maman": "Conseils pour maman",
   "Les documents à apporter": "Documents à apporter",
@@ -99,5 +101,44 @@
   "8_CATEGORY": "Essentiels Parentaux",
   "9_CATEGORY": "Parentalité Bien-être",
   "10_CATEGORY": "Conseils Nutrition",
-  "GoBack": "Retourner"
+  "GoBack": "Retourner" ,
+  "Document": {
+    "title": "Les documents à apporter",
+    "pieceidentite": "Une pièce d’identité",
+    "priseEnCharge": "Prise en charge sécurité sociale et/ou assurance complémentaire convention pré établi",
+    "bloodtype": "Carte de groupe sanguin"
+  } ,
+  "Valise": {
+    "title": "Your suitcase" ,
+    "tenuesConfortables": "Tenues confortables pour allaitement",
+    "culottesJetables": "Culottes ou slips jetables",
+    "necessaireToilette": "Nécessaire de toilette corporelle",
+    "coussinetsSeins": "Coussinets pour seins",
+    "garnituresJetables": "Garnitures maternité jetables",
+    "soutienGorge": "Soutien-gorge allaitement",
+    "mules": "Mules"
+  },
+  "ValiseBebe": {
+    "title": "Pour votre bébé",
+    "tenuesBebe": "3 tenues pour bébé",
+    "couverture": "Couverture",
+    "gigoteuse": "Gigoteuse",
+    "drapBain": "Drap de bain",
+    "peigneDents": "Peigne à dents serrés",
+    "baseLavante": "Base lavante douce pour bébé",
+    "paquetCouches": "Paquet de couches",
+    "filetOmbilical": "Filet ombilical",
+    "vetementsSortie": "Vêtements pour la sortie et siège auto \"dos à la route\""
+  },
+  "Chat": {
+    "PersonneRepondre1": "Personne n'est en ligne mais nous vous répondrons",
+    "PersonneRepondre2": "dans les plus brefs délais."
+   },
+   "InputChat": {
+    "placeholder": "Tapez ici..."
+   } ,
+   "1_VIDEOTITLE": "Médicaments post-partum pour le bébé",
+   "2_VIDEOTITLE": "Conseils pour les nouveaux parents",
+   "3_VIDEOTITLE": "Préparez le berceau du nouveau-né"
+
 }

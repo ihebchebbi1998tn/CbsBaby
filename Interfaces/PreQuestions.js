@@ -1,54 +1,64 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image } from "react-native";
+import React, { useState, useEffect , useContext } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DirectContact from "./DirectContact";
 import { BASE_URL } from "./Backend/apiConfig";
+import { UserContext } from "./Backend/UserContext";
 
 const PreQuestions = ({ route }) => {
   const navigation = useNavigation();
   const [predefinedQuestions, setPredefinedQuestions] = useState([]);
+  const [loading, setLoading] = useState(true); // State to manage loading indicator
   const { title } = route.params;
-
+  const { TranslatedTitle } = route.params;
+  const { user } = useContext(UserContext);
+  const userlanguage = user.language;
+  
   useEffect(() => {
     fetchPredefinedQuestions();
   }, [title]);
 
   const fetchPredefinedQuestions = () => {
-    fetch(`${BASE_URL}bebeapp/api/Messaging/Questions/fetch_questions.php?categoryTitle=${title}`)
+    fetch(`${BASE_URL}bebeapp/api/Messaging/Questions/fetch_questions.php?categoryTitle=${title}&output_language=${userlanguage}`)
       .then(response => response.json())
       .then(data => {
         setPredefinedQuestions(data);
+        setLoading(false); // Set loading to false when data is loaded
       })
       .catch(error => {
         console.error("Error fetching predefined questions:", error);
         setPredefinedQuestions([]);
+        setLoading(false); // Set loading to false in case of error
       });
   };
-
 
   const renderQuestionItem = ({ item }) => (
     <TouchableOpacity
       style={styles.questionButton}
-      onPress={() => navigation.navigate('AfterQuestions', { question_text: item.questionText , question_id: item.id })}
+      onPress={() => navigation.navigate('AfterQuestions', { translated_question_text: item.translated_question_text, question_text: item.questionText, question_id: item.id })}
     >
-      <Text style={styles.questionText}>{item.questionText}</Text>
+      <Text style={styles.questionText}>{item.translated_question_text}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>{title}</Text>
+        <Text style={styles.headerText}>{TranslatedTitle}</Text>
       </View>
-      <FlatList
-        data={predefinedQuestions}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderQuestionItem}
-        ListEmptyComponent={() => (
-          <Text style={styles.emptyText}>No predefined questions found</Text>
-        )}
-        contentContainerStyle={styles.questionList}
-      />
+      {loading ? ( // Show activity indicator while loading
+        <ActivityIndicator size="large" color="#D84374" />
+      ) : (
+        <FlatList
+          data={predefinedQuestions}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderQuestionItem}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyText}>No predefined questions found</Text>
+          )}
+          contentContainerStyle={styles.questionList}
+        />
+      )}
       <DirectContact />
     </View>
   );

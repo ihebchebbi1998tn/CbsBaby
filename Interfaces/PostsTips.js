@@ -22,30 +22,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8, // Add some space between the text and posts
-    marginRight: 15, // Add margin-right
+    marginRight: 1, // Add margin-right
     marginTop: 8, // Add margin top
   },
   postCard: {
-    width: 300, // Adjust card width as needed
+    width: '91%', // Adjust card width as needed
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#fff",
     elevation: 3,
-    marginHorizontal: 8, // Add horizontal margin
-    marginBottom: 16, // Add margin bottom
-    height: 280, // Adjusted card height
+    marginHorizontal: 1, // Add horizontal margin
+    marginBottom: 10, // Add margin bottom4
+    marginRight: -15,
+    height: 225, // Adjusted card height
   },
   postImage: {
     width: "100%",
-    height: 150, // Adjust image height as needed
+    height: 125, // Adjust image height as needed
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
   postContent: {
-    padding: 16,
+    padding: 13,
   },
   postTitle: {
-    fontSize: 16, // Decreased title font size
+    fontSize: 14, // Decreased title font size
     fontWeight: "bold",
     color: "#000", // Black color for title
     marginBottom: 8,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 12,
     color: "#D84374", // Pink color for category
     marginRight: 8,
   },
@@ -120,6 +121,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#d1d5db", // Light gray background color
     borderRadius: 4,
   },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 16,
+  },
 });
 
 const PostsTips = (props) => {
@@ -136,7 +144,7 @@ const PostsTips = (props) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts_category.php?category=${encodeURIComponent(parameter)}`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts_category.php?category=${encodeURIComponent(parameter)}&output_language=${user.language}`);
       if (response.ok) {
         const data = await response.json();
         return data;
@@ -189,19 +197,15 @@ const PostsTips = (props) => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchAndSetPosts();
-    }, 10000); // Fetch every 10 seconds
+    }, 5000); // Fetch every 10 seconds
 
     return () => clearInterval(interval);
   }, [fetchAndSetPosts]);
 
-  const handleSeeAllPress = () => {
-    // Handle navigation to see all posts
-  };
-
   return (
     <View style={styles.container}>
       {filteredPosts.length > 0 && (
-        <Text style={styles.latestArticlesText}>{parameter}</Text>
+        <Text style={styles.latestArticlesText}>{parameterTranslated}</Text>
       )}
       <ScrollView
         horizontal // Enable horizontal scrolling
@@ -264,9 +268,9 @@ const Post = ({ post, t }) => {
         <View style={styles.postContent}>
           <View style={styles.categoryContainer}>
             <Ionicons name="albums" size={16} color="#D84374" />
-            <Text style={styles.categoryText}>{" "}{post.category_post}</Text>
+            <Text style={styles.categoryText}>{" "}{post.translated_category_post}{" "}</Text>
           </View>
-          <Text style={styles.postTitle}>{post.title_post}</Text>
+          <Text style={styles.postTitle}>{post.translated_title}</Text>
           <View style={styles.dateContainer}>
             <Ionicons name="calendar" size={16} color="#808080" />
             <Text style={styles.dateText}>{post.createdat_post.split(" ")[0]}</Text>

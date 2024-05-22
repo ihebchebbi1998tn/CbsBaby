@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useContext} from "react";
 import {
   View,
   StyleSheet,
@@ -16,10 +16,10 @@ import CustomHeader from "./CustomHeader";
 import BottomNavbar from "./BottomNavbar";
 import SettingsProfile from "./SettingsProfile";
 import Gallery from "./Gallery";
-
+import { UserContext } from "./Backend/UserContext";
 const InterfaceClientPage = () => {
   const profileImageSource = require("../assets/Images/maman1.png");
-
+  const { user } = useContext(UserContext);
   const [currentSection, setCurrentSection] = useState("gallery");
 
   const toggleSection = (section) => {
@@ -34,8 +34,7 @@ const InterfaceClientPage = () => {
       <CustomHeader />
       <View style={styles.profileContainer}>
         <Image source={profileImageSource} style={styles.profileImage} />
-        <Text style={styles.username}>Aria Belle Miles</Text>
-        <Text style={styles.bio}>Precious moments of my little one ❤️️ 🍼</Text>
+        <Text style={styles.username}>{user.name} {user.surname}</Text>
       </View>
       <View style={styles.sectionToggleContainer}>
         <TouchableOpacity
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 20,
     borderRadius: 15,
-    margin: 10,
+    margin: 1,
   },
   profileImage: {
     width: 120,

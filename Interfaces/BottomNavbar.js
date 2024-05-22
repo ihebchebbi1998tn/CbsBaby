@@ -1,37 +1,80 @@
-import React, { useState, useRef , useContext} from "react";
-import { TouchableOpacity, View, Text, StyleSheet, Modal } from "react-native";
+import React, { useState, useRef, useContext, useEffect } from "react";
+import { TouchableOpacity, View, Text, StyleSheet, Modal, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from 'react-i18next';
 import { Camera } from 'expo-camera';
 import { BASE_URL } from "./Backend/apiConfig";
-import { Platform } from 'react-native';
 import { UserContext } from "./Backend/UserContext";
+import * as FileSystem from 'expo-file-system';
 
 const BottomNavbar = () => {
   const navigation = useNavigation();
   const { t } = useTranslation(); 
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const cameraRef = useRef(null); // Step 2: Create a ref for the camera
   const { user } = useContext(UserContext);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [isCameraVisible, setIsCameraVisible] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const cameraRef = useRef(null);
 
-  const openCamera = async () => {
-    try {
+  useEffect(() => {
+    (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      if (status === 'granted') {
-        setIsCameraOpen(true);
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const closeCamera = () => {
+    setIsCameraVisible(false);
+  };
+
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      try {
+        setIsUploading(true); // Set uploading state to true when starting upload
+        let photo = await cameraRef.current.takePictureAsync({ skipProcessing: true });
+        if (photo && photo.uri) {
+          closeCamera(); // Close the camera modal regardless of success or failure
+          await uploadImage(photo.uri);
+          console.log("Photo uploaded:", photo.uri);
+        }
+      } catch (error) {
+        console.log("Error taking picture:", error.message);
+      } finally {
+        setIsUploading(false); // Set uploading state to false after upload completes or fails
+      }
+    }
+  };
+
+  const uploadImage = async (uri) => {
+    try {
+      const formData = new FormData();
+      formData.append('userID', user.id);
+      formData.append('dateTaken', new Date().toISOString());
+  
+      // Encode image data as Base64
+      const base64ImageData = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+      formData.append('image', base64ImageData);
+  
+      const response = await fetch(`${BASE_URL}bebeapp/api/Profile/save_photo_profile.php`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      const data = await response.json();
+      if (data.status === 'success') {
+        console.log("Image uploaded successfully");
       } else {
-        alert('Camera permission denied');
+        console.log("Error uploading image:", data.message);
       }
     } catch (error) {
-      console.error('Error opening camera:', error);
+      console.log("Error uploading image:", error.message);
     }
   };
   
-  const closeCamera = () => {
-    setIsCameraOpen(false);
-  };
-
   const navigateTo = (screen) => {
     navigation.navigate(screen);
   };
@@ -40,138 +83,104 @@ const BottomNavbar = () => {
     return navigation.getState().routes[navigation.getState().index].name;
   };
 
-  const TabButton = ({ icon, activeIcon, label, screen }) => {
-    const activeRouteName = getActiveRouteName();
-    return (
-      <TouchableOpacity
-        style={[
-          styles.tabButton,
-          activeRouteName === screen && styles.activeTabButton,
-        ]}
-        onPress={() => navigateTo(screen)}
-      >
-        <Ionicons
-          name={activeRouteName === screen ? activeIcon : icon}
-          size={20}
-          color={activeRouteName === screen ? "#D84374" : "#AAA"}
-        />
-        {activeRouteName === screen && (
-          <View style={styles.activeIndicator} />
-        )}
-        <Text style={styles.tabLabel}>{t(label)}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const CameraView = () => {
-    return (
-      <Modal
-        visible={isCameraOpen}
-        transparent={true}
-        onRequestClose={closeCamera}
-      >
-        <View style={styles.cameraModal}>
-          <Camera style={{ flex: 1 }} type={Camera.Constants.Type.back} ref={cameraRef}> 
-            <View style={styles.cameraButtonContainer}>
-              <TouchableOpacity style={styles.cameraButton} onPress={takePicture}>
+  return (
+    <>
+      <View style={styles.container}>
+        <View style={styles.bottomNav}>
+          <TabButton
+            icon="home-outline"
+            activeIcon="home"
+            label="tabLabels.Accueil"
+            screen="InterfaceHomeClient"
+            navigateTo={navigateTo}
+            getActiveRouteName={getActiveRouteName}
+            t={t}
+          />
+          <TabButton
+            icon="bed-outline"
+            activeIcon="bed"
+            label="tabLabels.Conseils"
+            screen="InterfaceConseilClient"
+            navigateTo={navigateTo}
+            getActiveRouteName={getActiveRouteName}
+            t={t}
+          />
+          <View style={styles.cameraIconContainer}>
+            {isUploading ? (
+              <View style={styles.cameraIcon}>
+                <ActivityIndicator color="#FFF" size="large" />
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={styles.cameraIcon}
+                onPress={() => setIsCameraVisible(true)} // Open camera modal when clicked
+              >
                 <Ionicons name="camera" size={32} color="#FFF" />
               </TouchableOpacity>
-            </View>
-          </Camera>
+            )}
+          </View>
+          <TabButton
+            icon="chatbubbles-outline"
+            activeIcon="chatbubbles"
+            label="tabLabels.Aide"
+            screen="InterfaceCommunication5"
+            navigateTo={navigateTo}
+            getActiveRouteName={getActiveRouteName}
+            t={t}
+          />
+          <TabButton
+            icon="person-outline"
+            activeIcon="person"
+            label="tabLabels.Profil"
+            screen="InterfaceClientPage"
+            navigateTo={navigateTo}
+            getActiveRouteName={getActiveRouteName}
+            t={t}
+          />
+        </View>
+      </View>
+      <Modal visible={isCameraVisible} animationType="slide">
+        <View style={styles.modalContainer}>
+          <Camera style={styles.camera} type={Camera.Constants.Type.back} ref={cameraRef} />
           <TouchableOpacity style={styles.closeButton} onPress={closeCamera}>
             <Ionicons name="close" size={32} color="#FFF" />
           </TouchableOpacity>
-        </View>
-      </Modal>
-    );
-  };
-
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      try {
-        const { uri } = await cameraRef.current.takePictureAsync();
-        console.log("Picture taken:", uri);
-        const userID = user.id; 
-        const dateTaken = new Date().toISOString();
-        await uploadImage(userID, dateTaken, uri);
-        closeCamera(); 
-      } catch (error) {
-        console.error("Error taking picture:", error);
-      }
-    }
-  };
-  
-  const uploadImage = async (userID, dateTaken, uri) => {
-    try {
-      const formData = new FormData();
-      formData.append('userID', userID);
-      formData.append('dateTaken', dateTaken);
-      formData.append('image', {
-        uri: Platform.OS === 'ios' ? uri.replace('file://', '') : uri,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
-      });
-      
-      const response = await fetch(`${BASE_URL}bebeapp/api/Profile/save_photo_profile.php`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      
-      const data = await response.json();
-      console.log("Image uploaded:", data);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
-  };
-  
-  return (
-    <View style={styles.container}>
-      <View style={styles.bottomNav}>
-        <TabButton
-          icon="home-outline"
-          activeIcon="home"
-          label="tabLabels.Accueil"
-          screen="InterfaceHomeClient"
-        />
-        <TabButton
-          icon="bulb-outline"
-          activeIcon="bulb"
-          label="tabLabels.Conseils"
-          screen="InterfaceConseilClient"
-        />
-        <View style={styles.cameraIconContainer}>
-          <TouchableOpacity
-            style={styles.cameraIcon}
-            onPress={openCamera} 
-          >
+          <TouchableOpacity style={styles.takePictureButton} onPress={takePicture}>
             <Ionicons name="camera" size={32} color="#FFF" />
           </TouchableOpacity>
         </View>
-        <TabButton
-          icon="chatbubbles-outline"
-          activeIcon="chatbubbles"
-          label="tabLabels.Aide"
-          screen="InterfaceCommunication5"
-        />
-        <TabButton
-          icon="person-outline"
-          activeIcon="person"
-          label="tabLabels.Profil"
-          screen="InterfaceClientPage"
-        />
-      </View>
-      <CameraView />
-    </View>
+      </Modal>
+    </>
+  );
+};
+
+const TabButton = ({ icon, activeIcon, label, screen, navigateTo, getActiveRouteName, t }) => {
+  const activeRouteName = getActiveRouteName();
+  return (
+    <TouchableOpacity
+      style={[
+        styles.tabButton,
+        activeRouteName === screen && styles.activeTabButton,
+      ]}
+      onPress={() => navigateTo(screen)}
+    >
+      <Ionicons
+        name={activeRouteName === screen ? activeIcon : icon}
+        size={20}
+        color={activeRouteName === screen ? "#D84374" : "#AAA"}
+      />
+      {activeRouteName === screen && (
+        <View style={styles.activeIndicator} />
+      )}
+      <Text style={styles.tabLabel}>{t(label)}</Text>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFF",
-    paddingBottom: 0, // Add some padding to prevent the active indicator from getting cut off
+    paddingBottom: 0,
   },
   bottomNav: {
     flexDirection: "row",
@@ -189,60 +198,59 @@ const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 10, // Adjust padding to center icon and text vertically
+    paddingTop: 10,
   },
   activeTabButton: {
-    backgroundColor: "#FFF", // Set active background color to white
+    backgroundColor: "#FFF",
   },
   tabLabel: {
     fontSize: 12,
     color: "#AAA",
   },
   activeIndicator: {
-    width: 8,
-    height: 8,
+    width: 5,
+    height: 5,
     borderRadius: 4,
     backgroundColor: "#D84374",
-    marginTop: 5, // Adjust margin to position indicator below the text
+    marginTop:2,
   },
   cameraIconContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: -22, // Move the camera icon container up by 30 to surpass the bottom nav bar by 50%
-    zIndex: 1, // Set zIndex to ensure the camera icon container overlaps the bottom nav bar
+    marginTop: -22,
+    zIndex: 1,
   },
   cameraIcon: {
     backgroundColor: "#D84374",
-    borderRadius: 40, // Make the camera icon container a circle
+    borderRadius: 40,
     padding: 10,
-    elevation: 12, // Increase elevation for the camera icon to surpass the bottom nav bar
+    elevation: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 }, // Adjust shadow offset to match the elevation
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 6,
   },
-  cameraModal: {
+  modalContainer: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  cameraButtonContainer: {
+  camera: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  cameraButton: {
-    backgroundColor: '#D84374',
-    borderRadius: 50,
-    padding: 15,
+    width: "100%",
   },
   closeButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    padding: 10,
-    borderRadius: 5,
+    position: "absolute",
+    top: 40,
+    left: 20,
+    zIndex: 2,
+  },
+  takePictureButton: {
+    position: "absolute",
+    bottom: 40,
+    alignSelf: "center",
+    zIndex: 2,
   },
 });
 

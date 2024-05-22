@@ -144,7 +144,7 @@ const PostsTipsScroll = (props) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts.php`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts_category.php?category=${encodeURIComponent(parameter)}&output_language=ar`);
       if (response.ok) {
         const data = await response.json();
         return data;
@@ -267,9 +267,9 @@ const Post = ({ post, t }) => {
         <View style={styles.postContent}>
           <View style={styles.categoryContainer}>
             <Ionicons name="albums" size={16} color="#D84374" />
-            <Text style={styles.categoryText}> {post.category_post}</Text>
+            <Text style={styles.categoryText}> {post.translated_category_post}</Text>
           </View>
-          <Text style={styles.postTitle}>{post.title_post}</Text>
+          <Text style={styles.postTitle}>{post.translated_title}</Text>
           <View style={styles.dateContainer}>
             <Ionicons name="calendar" size={16} color="#808080" />
             <Text style={styles.dateText}>

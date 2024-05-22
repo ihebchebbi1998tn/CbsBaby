@@ -12,13 +12,13 @@
   "AfterQuestions.noPostQuestions": "No post questions found",
   "tabLabels": {
     "Accueil": "Home",
-    "Conseils": "Tips",
+    "Conseils": "Admission",
     "Aide": "Help",
     "Profil": "Profile"
   },
   "sidebar": {
     "Chat direct": "Direct Chat",
-    "Conseils": "Tips",
+    "Conseils": "Admission",
     "Listes de contrôle": "Checklists",
     "Paramètres": "Settings",
     "Évaluez notre application": "Rate our app",
@@ -65,7 +65,9 @@
     "confirmation": "confirmation" ,
     "confirmationtext": "Are you sure you want to change the language?" ,
     "cancel" : "Cancel",
-    "ok" : "Ok"
+    "ok" : "Ok" ,
+    "settings.confirmUpdateTitle": "Are you sure you want to update those informations ?"
+
   },
   "Astuces pour maman": "Tips for Mom",
   "Les documents à apporter": "Documents to Bring",
@@ -99,6 +101,45 @@
     "8_CATEGORY": "Parenting Essentials",
     "9_CATEGORY": "Parental Wellness",
     "10_CATEGORY": "Nutrition Advice" ,
-    "GoBack": "Go back"
+    "GoBack": "Go back" , 
+    "Document": {
+      "title": "Documents to bring",
+      "pieceidentite": "An ID",
+      "priseEnCharge": "Coverage of social security and/or additional insurance, pre-established agreement",
+      "bloodtype": "Blood group card"
+    },
+      "Valise": {
+        "title": "Your suitcase" ,
+        "tenuesConfortables": "Comfortable Nursing Outfits",
+        "culottesJetables": "Disposable Panties or Briefs",
+        "necessaireToilette": "Personal Hygiene Essentials",
+        "coussinetsSeins": "Breast Pads",
+        "garnituresJetables": "Disposable Maternity Pads",
+        "soutienGorge": "Nursing Bra",
+        "mules": "Slippers"
+      },
+      "ValiseBebe": {
+        "title": "For your baby",
+        "tenuesBebe": "3 Outfits for Baby",
+        "couverture": "Blanket",
+        "gigoteuse": "Sleeping Bag",
+        "drapBain": "Bath Towel",
+        "peigneDents": "Fine Tooth Comb",
+        "baseLavante": "Gentle Baby Wash",
+        "paquetCouches": "Diaper Pack",
+        "filetOmbilical": "Umbilical Cord Net",
+        "vetementsSortie": "Outing Clothes and Rear-Facing Car Seat"
+      },
+      "Chat": {
+        "PersonneRepondre1":"No one is online but we will answer you",
+        "PersonneRepondre2": "as soon as possible."
+       } , 
+       "InputChat": {
+        "placeholder": "Type here..."
+       },
+       "1_VIDEOTITLE": "Postpartum Medications for the Baby",
+        "2_VIDEOTITLE": "Tips for New Parents",
+       "3_VIDEOTITLE": "Preparing the Newborn's Crib"
 
+    
 }

@@ -12,11 +12,14 @@ const InputMessageNurse = ({ sessionId, recieverID , from ,token_key }) => {
   const [modalVisible, setModalVisible] = useState(false); 
   const { user } = useContext(UserContext);
   const SENDER_ID = user ? user.id : "";
+  const handleBackPress = () => {
+    setMessage(""); // Clear the message state
+    setIsTyping(false); // Revert to camera view
+  };
   const handleTyping = (text) => {
     setMessage(text);
-    setIsTyping(text.length > 0); 
+    setIsTyping(text.length > 0);
   };
- 
   const handleSendMessage = () => {
     if (message.trim() === "") {
       return;
@@ -127,7 +130,7 @@ const InputMessageNurse = ({ sessionId, recieverID , from ,token_key }) => {
   
     // Assuming the sound filename is 'nursenotification.mp3' in the assets directory
     const message = {
-      to: `ExponentPushToken[${token_key}]`,
+      to: `${token_key}`,
       sound: './assets/nursenotification.mp3', // Include the sound filename
       title: "Assistante CBS",
       body: "a envoyé un message",
@@ -157,12 +160,25 @@ const InputMessageNurse = ({ sessionId, recieverID , from ,token_key }) => {
     }
   };
   
-  
+  const handleToggleCamera = () => {
+    if (!isTyping) {
+      handleImageUpload();
+    } else {
+      handleBackPress();
+    }
+  };
 
   return (
     <View style={styles.inputContainer}>
-      <TouchableOpacity onPress={toggleCamera} style={styles.imageUploadButton}>
+
+      <TouchableOpacity
+        onPress={handleToggleCamera}
+        style={styles.imageUploadButton}
+      >
         {!isTyping && <Ionicons name="camera" size={24} color="#D84374" />}
+        {isTyping && (
+          <Ionicons name="chevron-back-outline" size={24} color="#D84374" />
+        )}
       </TouchableOpacity>
       <TextInput
         style={[styles.input, isTyping && styles.expandedInput]}

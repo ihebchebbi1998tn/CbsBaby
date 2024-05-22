@@ -22,6 +22,8 @@ import PostsTips from "./PostsTips";
 import PostsTipsScroll from "./PostsTipsScroll";
 import { KeyboardAvoidingView } from "react-native";
 import { Platform } from "react-native";
+import FlyersPosts from "./FlyersPosts";
+import AdsClinique from "./AdsClinique";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 10,
   },
   searchInput: {
@@ -105,6 +107,7 @@ const InterfaceHomeClient = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { t, i18n } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
+  
 
   useEffect(() => {
     if (user) {
@@ -216,6 +219,7 @@ const InterfaceHomeClient = () => {
                           />
                           <Text style={styles.goBackText}>{t("GoBack")}</Text>
                         </TouchableOpacity>
+           
                         <PostsTipsScroll
                           searchQuery={searchQuery}
                           parameterTranslated={selectedCategory.translated}
@@ -224,7 +228,9 @@ const InterfaceHomeClient = () => {
                       </View>
                     ) : (
                       <>
+                  <AdsClinique />
                         <Posts searchQuery={searchQuery} />
+                        {/* <FlyersPosts /> */}
                         {categories.map((category, index) => (
                           <PostsTips
                             key={index}

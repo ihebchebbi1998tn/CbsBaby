@@ -18,6 +18,9 @@ import SearchNurseHeader from "./SearchNurseHeader";
 import NurseInfoBar from "./NurseInfoBar";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useEnableTranslation } from './Backend/TranslationContext';
+
+
 const UserMessages = () => {
   const [messages, setMessages] = useState([]);
   const { user } = useContext(UserContext);
@@ -27,25 +30,25 @@ const UserMessages = () => {
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const { enableTranslationsChat } = useEnableTranslation();
+
 
   useEffect(() => {
-    const interval = setInterval(fetchMessages, 1200);
-    return () => clearInterval(interval);
-  }, []);
-
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 1200); 
+    return () => clearInterval(interval); 
+  }, [enableTranslationsChat]);
+  
   const fetchMessages = async () => {
     try {
-      let url;
-
-      url = `${BASE_URL}bebeapp/api/Messaging/get_messages.php?sender_id=${SENDER_ID}&session_id=${sessionId}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-      setMessages(data);
-      handleLastMessage(data[data.length - 1]);
+    let url;
+    url = `${BASE_URL}bebeapp/api/Messaging/get_messages.php?sender_id=${SENDER_ID}&session_id=${sessionId}&output_language=${user.language}&translations=${enableTranslationsChat}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setMessages(data);
+    handleLastMessage(data[data.length - 1]);
     } catch (error) {}
   };
-
   const handleLastMessage = async (lastMessage) => {
     try {
       if (
@@ -88,26 +91,6 @@ const UserMessages = () => {
     }
   };
 
-  /*   useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      setShowModal(true);
-      return true;
-    });
-
-    return () => backHandler.remove();
-  }, []);
-
-   // Function to close the modal
-   const closeModal = () => {
-    setShowModal(false);
-  };
-
-  // Function to handle leaving the page
-  const handleLeavePage = () => {
-    closeModal();
-    // Perform action when leaving the page, such as navigation
-    // navigation.goBack(); // Example of going back
-  }; */
 
   const renderMessageItem = ({ item }) => {
     const isCurrentUser = item.sender_id === SENDER_ID;
@@ -160,7 +143,7 @@ const UserMessages = () => {
                   !isCurrentUser ? { color: Colors.primary } : null,
                 ]}
               >
-                {item.message_text}
+                {item.translated_message}
               </Text>
             )}
           </View>
@@ -179,27 +162,7 @@ const UserMessages = () => {
         inverted={true}
       />
       <InputMessage sessionId={sessionId} recieverID="123456789" from="user" />
-      {/* Modal for confirmation */}
-      {/*   <Modal
-        animationType="fade"
-        transparent={true}
-        visible={showModal}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Are you sure you want to leave?</Text>
-            <View style={styles.buttonContainer}>
-              <Pressable style={[styles.button, styles.cancelButton]} onPress={closeModal}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </Pressable>
-              <Pressable style={[styles.button, styles.confirmButton]} onPress={handleLeavePage}>
-                <Text style={styles.buttonText}>Confirm</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
+      
       <Modal
         animationType="slide"
         transparent={true}
@@ -289,7 +252,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
-    color: Colors.text, // Reversed text color
+    color: Colors.text, 
   },
   messageDate: {
     fontSize: 12,

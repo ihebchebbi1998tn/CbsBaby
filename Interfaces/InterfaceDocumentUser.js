@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, FlatList, SafeAreaView, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
 import CustomHeader from './CustomHeader';
 import BottomNavbar from './BottomNavbar';
 import { BASE_URL } from './Backend/apiConfig';
+import { UserContext } from "./Backend/UserContext";
+import { useTranslation } from 'react-i18next';
+
 
 const InterfaceDocumentUser = () => {
   const navigation = useNavigation();
+  const { user } = useContext(UserContext);
+  const { t, i18n } = useTranslation(); // Access translation function
 
   const documents = [
-    { name: 'Une pièce d’identité', icon: 'file-text' },
-    { name: 'Prise en charge sécurité sociale et/ou assurance complémentaire convention pré établi', icon: 'file-text' },
-    { name: 'Carte de groupe sanguin', icon: 'file-text' },
-  ];
+    { name: 'Une pièce d’identitéé', translatedName: t('Document.pieceidentite'), icon: 'file-text' },
+    { name: 'Prise en charge sécurité sociale et/ou assurance complémentaire convention pré établi', translatedName: t('Document.priseEnCharge'), icon: 'file-text' },
+    { name: 'Carte de groupe sanguin', translatedName: t('Document.bloodtype'), icon: 'file-text' },
+];
+
 
   const [completedDocuments, setCompletedDocuments] = useState([]);
   const progressPercentage = Math.round((completedDocuments.length / documents.length) * 100);
@@ -36,12 +42,11 @@ const InterfaceDocumentUser = () => {
 
   const updateDocumentStatus = async (documentName, status) => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/todolist_add.php?categorytodo=Les%20documents%20%C3%A0%20apporter&name_todo=${encodeURIComponent(documentName)}&status=${status}&user=1`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/todolist_add.php?categorytodo=Les%20documents%20%C3%A0%20apporter&name_todo=${encodeURIComponent(documentName)}&status=${status}&user=${user.id}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
     }
   };
 
@@ -56,21 +61,18 @@ const InterfaceDocumentUser = () => {
       }
       setCompletedDocuments(updatedCompletedDocuments);
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
     }
   };
 
   const checkTaskStatus = async (taskName) => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/get_lists_todo.php?user=1&task_name=${encodeURIComponent(taskName)}`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/get_lists_todo.php?user=${user.id}&task_name=${encodeURIComponent(taskName)}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      console.log(data);
       return data.task_completed;
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
     }
   };
 
@@ -83,7 +85,7 @@ const InterfaceDocumentUser = () => {
       onPress={() => handleDocumentClick(item.name)}
     >
       <Icon name={item.icon} size={24} color="#d94274" style={styles.icon} />
-      <Text style={[styles.documentText, { color: completedDocuments.includes(item.name) ? '#616161' : '#333333' }]}>{item.name}</Text>
+      <Text style={[styles.documentText, { color: completedDocuments.includes(item.name) ? '#616161' : '#333333' }]}>{item.translatedName}</Text>
       {completedDocuments.includes(item.name) && (
         <View style={styles.completedOverlay}>
           <Text style={styles.completedText}>Complété ✔</Text>
@@ -105,7 +107,7 @@ const InterfaceDocumentUser = () => {
         </TouchableOpacity>
         <View style={styles.container}>
           <Text style={styles.heading}>
-            Les documents à apporter
+           {t('Document.title')}  
           </Text>
           <View style={styles.progressContainer}>
             <View style={styles.progressBarContainer}>

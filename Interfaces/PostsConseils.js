@@ -267,7 +267,7 @@ const Post = ({ post, checkLike, likePost }) => {
   
   const buildShareMessage = () => {
     const descriptionText = stripHtmlTags(post.descri_post);
-    return `${post.title_post}\nDescription: ${descriptionText}\n source = L'application mobile cbsbebe : https://www.cliniquebeausejour.tn/\n`;
+    return `${post.translated_title}\nDescription: ${descriptionText}\n source = L'application mobile cbsbebe : https://www.cliniquebeausejour.tn/\n`;
   };
   
   const sharePost = async () => {
@@ -321,7 +321,7 @@ const Post = ({ post, checkLike, likePost }) => {
           />
         )}
         <View style={styles.postContent}>
-          <Text style={styles.postTitle}>{post.title_post}</Text>
+          <Text style={styles.postTitle}>{post.translated_title}</Text>
           <View style={styles.postDescriptionContainer}>
             <HTML source={{ html: post.descri_post }} />
           </View>

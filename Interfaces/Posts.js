@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, TextInput } from "react-native";
+import { View, Image, Text, TouchableOpacity, StyleSheet, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { Video } from "expo-av";
 import { useNavigation } from "@react-navigation/native";
 import { BASE_URL } from "./Backend/apiConfig";
@@ -22,30 +22,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8, // Add some space between the text and posts
-    marginRight: 15, // Add margin-right
+    marginRight: 1, // Add margin-right
     marginTop: 8, // Add margin top
   },
   postCard: {
-    width: 300, // Adjust card width as needed
+    width: '91%', // Adjust card width as needed
     borderRadius: 12,
     overflow: "hidden",
     backgroundColor: "#fff",
     elevation: 3,
-    marginHorizontal: 8, // Add horizontal margin
-    marginBottom: 16, // Add margin bottom
-    height: 280, // Adjusted card height
+    marginHorizontal: 1, // Add horizontal margin
+    marginBottom: 10, // Add margin bottom4
+    marginRight: -15,
+    height: 225, // Adjusted card height
   },
   postImage: {
     width: "100%",
-    height: 150, // Adjust image height as needed
+    height: 125, // Adjust image height as needed
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },
   postContent: {
-    padding: 16,
+    padding: 13,
   },
   postTitle: {
-    fontSize: 16, // Decreased title font size
+    fontSize: 14, // Decreased title font size
     fontWeight: "bold",
     color: "#000", // Black color for title
     marginBottom: 8,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 12,
     color: "#D84374", // Pink color for category
     marginRight: 8,
   },
@@ -133,15 +134,16 @@ const Posts = (props) => {
   const [allPosts, setAllPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true); 
   const { user } = useContext(UserContext);
   const navigation = useNavigation();
-  const { t, i18n } = useTranslation(); // Access translation function
+  const { t, i18n } = useTranslation(); 
   const { changeLanguage } = useLanguage();
-  const {  searchQuery } = props;
+  const { searchQuery } = props;
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts.php`);
+      const response = await fetch(`${BASE_URL}bebeapp/api/get_posts.php?output_language=${user.language}`);
       if (response.ok) {
         const data = await response.json();
         return data;
@@ -159,12 +161,13 @@ const Posts = (props) => {
     if (user) {
       changeLanguage(user.language);
     }
-  }, [user, changeLanguage]);
+  }, [user, changeLanguage, searchQuery]);
 
   const fetchAndSetPosts = useCallback(async () => {
     const data = await fetchPosts();
     setAllPosts(data);
     applyFiltersAndSort(data, searchQuery);
+    setLoading(false); // Set loading state to false after fetching data
   }, [searchQuery]);
 
   const applyFiltersAndSort = (posts, query) => {
@@ -211,8 +214,8 @@ const Posts = (props) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {filteredPosts.length === 0 && (
-          <Text style={styles.noPostsText}>{t('posts.noPostsFound')}</Text>
+        {filteredPosts.length === 0 && !loading && (
+          <ActivityIndicator size="small" color="#0000ff" />
         )}
         {filteredPosts.map((post, index) => (
           <Post
@@ -269,9 +272,9 @@ const Post = ({ post, t }) => {
         <View style={styles.postContent}>
           <View style={styles.categoryContainer}>
             <Ionicons name="albums" size={16} color="#D84374" />
-            <Text style={styles.categoryText}>{" "}{post.category_post}</Text>
+            <Text style={styles.categoryText}>{" "}{post.translated_category_post}{" "}</Text>
           </View>
-          <Text style={styles.postTitle}>{post.title_post}</Text>
+          <Text style={styles.postTitle}>{post.translated_title}</Text>
           <View style={styles.dateContainer}>
             <Ionicons name="calendar" size={16} color="#808080" />
             <Text style={styles.dateText}>{post.createdat_post.split(" ")[0]}</Text>
